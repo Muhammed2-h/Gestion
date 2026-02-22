@@ -6,6 +6,7 @@ import type {
   AppSettings,
 } from '@/types'
 import { fetchBatchQuotes, fetchBatchSectorInfo } from '@/lib/marketData'
+import { encryptedStorage } from '@/lib/storage'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Portfolio calculations derived from transactions
@@ -314,10 +315,10 @@ export const usePortfolioStore = create<PortfolioState>()(
       onRehydrateStorage: () => (state) => {
         if (state) {
           // after rehydration, recompute summary
-          const summary = derivePortfolioSummary(state.holdings)
           state.summary = summary
         }
       },
+      storage: encryptedStorage as any,
     }
   )
 )
@@ -342,7 +343,10 @@ export const useSettingsStore = create<SettingsState>()(
       },
       updateSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
     }),
-    { name: 'gestion-settings' }
+    { 
+      name: 'gestion-settings',
+      storage: encryptedStorage as any,
+    }
   )
 )
 

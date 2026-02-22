@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/authStore'
-import { Mail, Lock, User, ArrowRight, TrendingUp, Shield, Globe } from 'lucide-react'
+import { Mail, Lock, User, ArrowRight, TrendingUp, Shield, Globe, RefreshCw } from 'lucide-react'
 
 export default function Auth() {
   const login = useAuthStore((s) => s.login)
@@ -9,14 +9,39 @@ export default function Auth() {
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const [mounted, setMounted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [attempts, setAttempts] = useState(0)
+
+  useEffect(() => {
+    if (attempts >= 5) {
+      setError('Too many failed attempts. Please try again later.')
+    }
+  }, [attempts])
 
   useEffect(() => setMounted(true), [])
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!email || !password || (!isLogin && !name)) return
-    // Since there's no backend, simulate login instantly
+    if (attempts >= 5) return
+
+    setLoading(true)
+    setError('')
+
+    // Simulate network delay
+    await new Promise(r => setTimeout(r, 1000))
+
+    if (isLogin && password !== 'password123') { // Mock check
+      setAttempts(a => a + 1)
+      setError('Invalid email or password.')
+      setPassword('')
+      setLoading(false)
+      return
+    }
+
     login(email, isLogin ? undefined : name)
+    setLoading(false)
   }
 
   return (
@@ -70,6 +95,13 @@ export default function Auth() {
                 {isLogin ? 'Enter your credentials to access your terminal.' : 'Start dominating the markets today.'}
               </p>
             </div>
+
+            {error && (
+              <div style={{ marginBottom: 20, padding: '10px 14px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <Shield size={16} color="#ef4444" />
+                <span style={{ fontSize: '0.8rem', color: '#ef4444', fontWeight: 500 }}>{error}</span>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {!isLogin && (
@@ -130,8 +162,12 @@ export default function Auth() {
                 </div>
               )}
 
-              <button type="submit" className="btn btn-primary" style={submitBtnStyle}>
-                {isLogin ? 'Sign In' : 'Sign Up'} <ArrowRight size={16} />
+              <button type="submit" className="btn btn-primary" style={submitBtnStyle} disabled={loading || attempts >= 5}>
+                {loading ? (
+                  <><RefreshCw size={16} className="animate-spin" /> Verifying...</>
+                ) : (
+                  <>{isLogin ? 'Sign In' : 'Sign Up'} <ArrowRight size={16} /></>
+                )}
               </button>
             </form>
 

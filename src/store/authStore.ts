@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { generateId } from '@/lib/utils'
+import { encryptedStorage } from '@/lib/storage'
 
 export interface User {
   id: string
@@ -31,6 +32,9 @@ export const useAuthStore = create<AuthState>()(
       },
       logout: () => set({ user: null }),
     }),
-    { name: 'gestion-auth' }
+    { 
+      name: 'gestion-auth',
+      storage: encryptedStorage as any,
+    }
   )
 )
