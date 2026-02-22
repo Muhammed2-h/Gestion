@@ -1,6 +1,7 @@
 import { RefreshCw, Bell, Search, TrendingUp, TrendingDown, Menu } from 'lucide-react'
 import { useState } from 'react'
 import { usePortfolioStore } from '@/store'
+import { useAuthStore } from '@/store/authStore'
 import { formatCurrency, formatPct } from '@/lib/utils'
 import UserProfileModal from '@/components/UserProfileModal'
 
@@ -11,6 +12,7 @@ interface Props {
 export default function Header({ onMenuClick }: Props) {
   const summary           = usePortfolioStore((s) => s.summary)
   const refreshMarketData = usePortfolioStore((s) => s.refreshMarketData)
+  const user              = useAuthStore((s) => s.user)
   const [showProfile,   setShowProfile]   = useState(false)
   const [isRefreshing,  setIsRefreshing]  = useState(false)
 
@@ -90,10 +92,11 @@ export default function Header({ onMenuClick }: Props) {
         onClick={() => setShowProfile(true)}
         role="button"
         aria-label="User profile"
+        title="User profile"
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && setShowProfile(true)}
       >
-        G
+        {user?.name?.[0]?.toUpperCase() || 'G'}
       </div>
 
       {showProfile && <UserProfileModal onClose={() => setShowProfile(false)} />}

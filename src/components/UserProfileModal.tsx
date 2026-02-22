@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Moon, Sun, Download, Upload, Trash2, User, Mail, ShieldAlert } from 'lucide-react'
+import { X, Moon, Sun, Download, Upload, Trash2, User, Mail, ShieldAlert, LogOut } from 'lucide-react'
 import { useSettingsStore, usePortfolioStore } from '@/store'
+import { useAuthStore } from '@/store/authStore'
 
 interface Props {
   onClose: () => void
@@ -10,6 +11,8 @@ interface Props {
 export default function UserProfileModal({ onClose }: Props) {
   const { settings, updateSettings } = useSettingsStore()
   const { accounts, transactions, holdings } = usePortfolioStore()
+  const user = useAuthStore(s => s.user)
+  const logout = useAuthStore(s => s.logout)
   const fileInputRef = useRef<HTMLInputElement>(null)
   
   const [showConfirmWipe, setShowConfirmWipe] = useState(false)
@@ -92,17 +95,27 @@ export default function UserProfileModal({ onClose }: Props) {
 
         {/* User Info */}
         <div style={sectionBox} className="flex items-center gap-4 mb-4">
-          <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'linear-gradient(135deg, var(--color-accent), #059669)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 800, color: 'white' }}>
-            G
+          <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'linear-gradient(135deg, var(--color-accent), #059669)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 800, color: 'white', flexShrink: 0 }}>
+            {user?.name?.[0]?.toUpperCase() || 'G'}
           </div>
           <div className="flex-1">
-            <h2 style={{ margin: '0 0 4px 0', fontSize: '1.2rem', color: 'var(--text-primary)' }}>Gestion User</h2>
+            <h2 style={{ margin: '0 0 4px 0', fontSize: '1.2rem', color: 'var(--text-primary)' }}>{user?.name || 'Gestion User'}</h2>
             <div className="flex items-center gap-2" style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              <Mail size={14} /> local-first@gestion.app
+              <Mail size={14} /> {user?.email || 'local-first@gestion.app'}
             </div>
             <div className="flex items-center gap-2 mt-1" style={{ color: 'var(--color-accent)', fontSize: '0.75rem', fontWeight: 600 }}>
               <User size={12} /> Local Storage Profile
             </div>
+          </div>
+          <div>
+            <button 
+              className="btn btn-outline" 
+              style={{ color: 'var(--color-loss)', borderColor: 'rgba(239,68,68,0.2)', padding: '8px' }}
+              onClick={() => { logout(); onClose(); }}
+              title="Logout"
+            >
+              <LogOut size={16} />
+            </button>
           </div>
         </div>
 

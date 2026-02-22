@@ -1,6 +1,8 @@
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect, useState, useCallback } from 'react'
 import { useSettingsStore } from '@/store'
+import { useAuthStore } from '@/store/authStore'
+import Auth from '@/pages/Auth'
 import Sidebar from '@/components/Sidebar'
 import Header from '@/components/Header'
 import MobileBottomNav from '@/components/MobileBottomNav'
@@ -28,6 +30,7 @@ function NotFound() {
 
 export default function App() {
   const settings  = useSettingsStore((s) => s.settings)
+  const user      = useAuthStore((s) => s.user)
   const navigate  = useNavigate()
   const location  = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -63,6 +66,10 @@ export default function App() {
 
   const toggleSidebar = useCallback(() => setSidebarOpen(o => !o), [])
   const closeSidebar  = useCallback(() => setSidebarOpen(false), [])
+
+  if (!user) {
+    return <Auth />
+  }
 
   return (
     <div className="app-shell">
