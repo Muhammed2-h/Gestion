@@ -1,5 +1,5 @@
-import { useState, useEffect, useId } from 'react'
-import { X, Code, Play, TerminalSquare, SlidersHorizontal, Plus, Trash2, Info, ChevronDown } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { X, Code, Play, TerminalSquare, SlidersHorizontal, Plus, Trash2, Info } from 'lucide-react'
 
 interface Props { onClose: () => void }
 
@@ -179,8 +179,6 @@ function RuleRow({
 }) {
   const [showTooltip, setShowTooltip] = useState(false)
   const def = INDICATOR_CATALOGUE.find(d => d.id === rule.indicator)!
-  const color = side === 'buy' ? 'var(--color-profit)' : 'var(--color-loss)'
-  const colorDim = side === 'buy' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)'
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -202,9 +200,9 @@ function RuleRow({
                 <span style={{
                   position: 'absolute', bottom: '120%', left: '50%', transform: 'translateX(-50%)',
                   background: 'var(--color-bg-card)', border: '1px solid var(--color-border)',
-                  borderRadius: 6, padding: '6px 10px', whiteSpace: 'nowrap',
+                  borderRadius: 6, padding: '6px 10px', whiteSpace: 'normal',
                   fontSize: '0.7rem', color: 'var(--text-secondary)', zIndex: 100,
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.4)', lineHeight: 1.5, maxWidth: 240, whiteSpace: 'normal' as any,
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.4)', lineHeight: 1.5, maxWidth: 240,
                 }}>
                   <strong style={{ color: 'var(--color-accent)' }}>{def.label}</strong><br />
                   {def.desc}<br />

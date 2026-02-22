@@ -31,7 +31,7 @@ export default function Auth() {
         <div style={brandSectionStyle} className={mounted ? 'animate-fade-in' : ''}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
             <div style={logoSquareStyle}>G</div>
-            <h1 style={{ m: 0, fontSize: '2.5rem', fontWeight: 800, background: 'linear-gradient(135deg, #fff, #9ca3af)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>
+            <h1 style={{ margin: 0, fontSize: '2.5rem', fontWeight: 800, background: 'linear-gradient(135deg, #fff, #9ca3af)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Gestion
             </h1>
           </div>

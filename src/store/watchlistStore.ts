@@ -15,7 +15,7 @@ interface WatchlistState {
   hasSymbol: (symbol: string, exchange: Exchange) => boolean
 
   // Live price updates (called by the poller hook)
-  updatePrices: (updates: Partial<WatchlistItem> & { symbol: string; exchange: Exchange }[]) => void
+  updatePrices: (updates: (Partial<WatchlistItem> & { symbol: string; exchange: Exchange; ltp?: number })[]) => void
 
   // Alert CRUD
   addAlert: (
