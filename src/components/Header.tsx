@@ -1,6 +1,6 @@
-import { RefreshCw, Bell, Search, TrendingUp, TrendingDown, Menu } from 'lucide-react'
+import { RefreshCw, Bell, Search, TrendingUp, TrendingDown, Menu, Sun, Moon } from 'lucide-react'
 import { useState } from 'react'
-import { usePortfolioStore } from '@/store'
+import { usePortfolioStore, useSettingsStore } from '@/store'
 import { useAuthStore } from '@/store/authStore'
 import { formatCurrency, formatPct } from '@/lib/utils'
 import UserProfileModal from '@/components/UserProfileModal'
@@ -12,6 +12,8 @@ interface Props {
 export default function Header({ onMenuClick }: Props) {
   const summary           = usePortfolioStore((s) => s.summary)
   const refreshMarketData = usePortfolioStore((s) => s.refreshMarketData)
+  const settings          = useSettingsStore((s) => s.settings)
+  const updateSettings    = useSettingsStore((s) => s.updateSettings)
   const user              = useAuthStore((s) => s.user)
   const [showProfile,   setShowProfile]   = useState(false)
   const [isRefreshing,  setIsRefreshing]  = useState(false)
@@ -72,7 +74,9 @@ export default function Header({ onMenuClick }: Props) {
       <button
         className="btn btn-ghost btn-icon"
         data-tooltip="Refresh Market Data"
-        title="Refresh Market Data"
+        data-tooltip-pos="bottom"
+        data-tooltip-align="right"
+        aria-label="Refresh Market Data"
         style={{ color: 'var(--text-muted)' }}
         onClick={async () => {
           setIsRefreshing(true)
@@ -83,8 +87,27 @@ export default function Header({ onMenuClick }: Props) {
         <RefreshCw size={17} className={isRefreshing ? 'animate-spin' : ''} />
       </button>
 
-      <button className="btn btn-ghost btn-icon" data-tooltip="Notifications" title="Notifications" style={{ color: 'var(--text-muted)' }}>
+      <button 
+        className="btn btn-ghost btn-icon" 
+        data-tooltip="Notifications" 
+        data-tooltip-pos="bottom"
+        data-tooltip-align="right"
+        aria-label="Notifications" 
+        style={{ color: 'var(--text-muted)' }}
+      >
         <Bell size={17} />
+      </button>
+
+      <button 
+        className="btn btn-ghost btn-icon" 
+        data-tooltip="Toggle Theme" 
+        data-tooltip-pos="bottom"
+        data-tooltip-align="right"
+        aria-label="Toggle Theme" 
+        style={{ color: 'var(--text-muted)' }}
+        onClick={() => updateSettings({ theme: settings.theme === 'light' ? 'dark' : 'light' })}
+      >
+        {settings.theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
       </button>
 
       <div
