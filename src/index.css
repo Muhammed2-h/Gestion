@@ -1118,6 +1118,21 @@ pre {
   }
 
   /* ── Grids: all single column ── */
+  :root {
+    --dash-grid: 1fr;
+    --account-grid: 1fr;
+    --modal-grid: 1fr;
+    --modal-grid-2: 1fr;
+    --modal-grid-3: 1fr;
+    --modal-grid-4: 1fr;
+    --algo-grid: 1fr;
+    --algo-cond-grid: 1fr;
+    --algo-action-grid: 1fr;
+    --algo-exec-grid: 1fr;
+    --auth-grid: 1fr;
+    /* Watchlist: only symbol + LTP + change + actions on mobile */
+    --watchlist-grid: 1fr auto auto auto;
+  }
   .grid-2,
   .grid-3,
   .grid-4 {
@@ -1215,10 +1230,54 @@ pre {
 
   /* ── Hide non-essential header items ── */
   .header-search {
-    display: none;
+    display: none !important;
   }
   .header-ticker {
+    display: none !important;
+  }
+
+  /* ── Trading Terminal: wrap header controls on mobile ── */
+  .terminal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+  .terminal-controls {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .terminal-controls .form-input {
+    flex: 1;
+    min-width: 80px;
+  }
+  .terminal-mode-btns {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .terminal-mode-btns .btn {
+    flex: 1;
+  }
+
+  /* ── Watchlist: hide O/H/L columns on mobile ── */
+  .watchlist-col-ohl {
     display: none;
+  }
+  .watchlist-row {
+    grid-template-columns: 1fr auto auto auto !important;
+  }
+
+  /* ── Dashboard 2-col main grid → 1-col ── */
+  .dashboard-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* span-2 items should not span in 1-col layout */
+  .span-2-mobile {
+    grid-column: span 1 !important;
   }
 }
 
@@ -1242,6 +1301,10 @@ pre {
   }
   .page-actions .btn {
     width: 100%;
+  }
+  /* Backtest metrics: 2-col on small phone */
+  .backtest-grid {
+    grid-template-columns: 1fr 1fr !important;
   }
 }
 

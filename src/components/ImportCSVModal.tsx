@@ -62,7 +62,7 @@ export default function ImportCSVModal({ onClose }: Props) {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* Broker + Account selector */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-2, 1fr 1fr)', gap: 12 }}>
             <div className="form-group">
               <label className="form-label">Broker Format</label>
               <select className="form-select" value={broker} onChange={(e) => setBroker(e.target.value)}>
@@ -129,7 +129,7 @@ export default function ImportCSVModal({ onClose }: Props) {
               <div style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--text-primary)', marginBottom: 8 }}>
                 Preview: {parsed.length} transactions found
               </div>
-              <div style={{ maxHeight: 180, overflowY: 'auto', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+              <div className="table-scroll-wrapper" style={{ maxHeight: 180, overflowY: 'auto', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
                 <table className="data-table" style={{ fontSize: '0.78rem' }}>
                   <thead>
                     <tr>

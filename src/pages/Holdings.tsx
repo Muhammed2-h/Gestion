@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { TrendingUp, TrendingDown, Search, RefreshCw, PlusCircle, Upload } from 'lucide-react'
 import { usePortfolioStore } from '@/store'
 import { formatCurrency, formatPct } from '@/lib/utils'
@@ -28,8 +28,10 @@ export default function Holdings() {
     else { setSortBy(col); setSortDir('desc') }
   }
 
-  const SortIcon = ({ col }: { col: keyof Holding }) =>
-    sortBy === col ? <span style={{ fontSize: '0.6rem', color: 'var(--color-accent)' }}>{sortDir === 'desc' ? '▼' : '▲'}</span> : null
+  function renderSortIcon(col: keyof Holding) {
+    if (sortBy !== col) return null;
+    return <span style={{ fontSize: '0.6rem', color: 'var(--color-accent)' }}>{sortDir === 'desc' ? '▼' : '▲'}</span>
+  }
 
   if (holdings.length === 0) {
     return (
@@ -77,13 +79,13 @@ export default function Holdings() {
             { label: 'Current Value', val: formatCurrency(summary.current_value, true), color: 'var(--color-accent)' },
             { label: 'Unrealised P&L', val: `${formatCurrency(summary.total_pnl, true)} (${formatPct(summary.total_pnl_pct)})`, color: summary.total_pnl >= 0 ? 'var(--color-profit)' : 'var(--color-loss)' },
           ].map(({ label, val, color }, i) => (
-            <>
-              {i > 0 && <div key={`div-${i}`} style={{ width: 1, height: 36, background: 'var(--color-border)' }} />}
-              <div key={label}>
+            <React.Fragment key={label}>
+              {i > 0 && <div style={{ width: 1, height: 36, background: 'var(--color-border)' }} />}
+              <div>
                 <div className="stat-label">{label}</div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color }}>{val}</div>
               </div>
-            </>
+            </React.Fragment>
           ))}
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8, background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '6px 12px' }}>
             <Search size={14} color="var(--text-muted)" />
@@ -94,18 +96,18 @@ export default function Holdings() {
       </div>
 
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-        <div style={{ overflowX: 'auto' }}>
+        <div className="table-scroll-wrapper">
           <table className="data-table">
             <thead>
               <tr>
                 <th>Symbol</th>
                 <th>Sector</th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('total_quantity')}>Qty <SortIcon col="total_quantity" /></th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('average_price')}>Avg Cost <SortIcon col="average_price" /></th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('current_price')}>Market Price <SortIcon col="current_price" /></th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('current_value')}>Value <SortIcon col="current_value" /></th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('unrealized_pnl')}>P&L <SortIcon col="unrealized_pnl" /></th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('unrealized_pnl_pct')}>P&L % <SortIcon col="unrealized_pnl_pct" /></th>
+                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('total_quantity')}>Qty {renderSortIcon('total_quantity')}</th>
+                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('average_price')}>Avg Cost {renderSortIcon('average_price')}</th>
+                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('current_price')}>Market Price {renderSortIcon('current_price')}</th>
+                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('current_value')}>Value {renderSortIcon('current_value')}</th>
+                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('unrealized_pnl')}>P&L {renderSortIcon('unrealized_pnl')}</th>
+                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('unrealized_pnl_pct')}>P&L % {renderSortIcon('unrealized_pnl_pct')}</th>
                 <th style={{ textAlign: 'center' }}>Actions</th>
               </tr>
             </thead>

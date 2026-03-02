@@ -54,7 +54,7 @@ export default function AddAccountModal({ onClose }: Props) {
 
           <div className="form-group">
             <label className="form-label">Account Type</label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-4, repeat(4, 1fr))', gap: 8 }}>
               {(['equity', 'fno', 'mf', 'cash'] as AccountType[]).map((t) => (
                 <label key={t} style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center',

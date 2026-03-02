@@ -110,7 +110,7 @@ export default function AlgoTrading() {
         </div>
       )}
 
-      <div className="grid grid-2" style={{ gridTemplateColumns: '1fr 340px' }}>
+      <div className="grid grid-2" style={{ gridTemplateColumns: 'var(--algo-grid, 1fr 340px)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {/* Strategy Selection */}
           <div className="card">

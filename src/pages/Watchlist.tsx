@@ -120,7 +120,7 @@ function AddAlertModal({ item, onClose }: { item: WatchlistItem; onClose: () => 
         {/* Condition buttons */}
         <div className="form-group">
           <label className="form-label">Condition</label>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-2, 1fr 1fr)', gap: 8 }}>
             {CONDITIONS.map(({ value, label, desc }) => (
               <button
                 key={value}
@@ -189,7 +189,7 @@ function WatchlistRow({ item }: { item: WatchlistItem }) {
     <>
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr auto auto auto auto auto auto auto',
+        gridTemplateColumns: 'var(--watchlist-grid, 1fr auto auto auto auto auto auto auto)',
         alignItems: 'center',
         gap: 14,
         padding: '14px 16px',
@@ -241,7 +241,7 @@ function WatchlistRow({ item }: { item: WatchlistItem }) {
 
         {/* O / H / L */}
         {(['open', 'high', 'low'] as const).map((key) => (
-          <div key={key} style={{ textAlign: 'right', minWidth: 70 }}>
+          <div key={key} className="watchlist-col-ohl" style={{ textAlign: 'right', minWidth: 70 }}>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: key === 'high' ? 'var(--color-profit)' : key === 'low' ? 'var(--color-loss)' : 'var(--text-secondary)' }}>
               {item[key] ? `₹${item[key]!.toLocaleString('en-IN', { maximumFractionDigits: 2 })}` : '—'}
             </div>
@@ -433,28 +433,30 @@ export default function Watchlist() {
               </button>
             </div>
           ) : (
-            <div>
-              {/* Column headers */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr auto auto auto auto auto auto auto',
-                gap: 14, padding: '10px 16px',
-                background: 'var(--color-bg-primary)',
-                borderBottom: '1px solid var(--color-border)',
-                fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
-                color: 'var(--text-muted)',
-              }}>
-                <span>Symbol</span>
-                <span style={{ textAlign: 'right' }}>LTP</span>
-                <span style={{ textAlign: 'right', minWidth: 80 }}>Day Chg</span>
-                <span style={{ textAlign: 'right', minWidth: 70 }}>Open</span>
-                <span style={{ textAlign: 'right', minWidth: 70 }}>High</span>
-                <span style={{ textAlign: 'right', minWidth: 70 }}>Low</span>
-                <span style={{ minWidth: 80 }}>Alerts</span>
-                <span />
-              </div>
-              <div style={{ overflowX: 'auto' }}>
-                {items.map((item) => <WatchlistRow key={item.id} item={item} />)}
+            <div className="table-scroll-wrapper">
+              <div style={{ minWidth: 700 }}>
+                {/* Column headers */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'var(--watchlist-grid, 1fr auto auto auto auto auto auto auto)',
+                  gap: 14, padding: '10px 16px',
+                  background: 'var(--color-bg-primary)',
+                  borderBottom: '1px solid var(--color-border)',
+                  fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
+                  color: 'var(--text-muted)',
+                }}>
+                  <span>Symbol</span>
+                  <span style={{ textAlign: 'right' }}>LTP</span>
+                  <span style={{ textAlign: 'right', minWidth: 80 }}>Day Chg</span>
+                  <span className="watchlist-col-ohl" style={{ textAlign: 'right', minWidth: 70 }}>Open</span>
+                  <span className="watchlist-col-ohl" style={{ textAlign: 'right', minWidth: 70 }}>High</span>
+                  <span className="watchlist-col-ohl" style={{ textAlign: 'right', minWidth: 70 }}>Low</span>
+                  <span style={{ minWidth: 80 }}>Alerts</span>
+                  <span />
+                </div>
+                <div>
+                  {items.map((item) => <WatchlistRow key={item.id} item={item} />)}
+                </div>
               </div>
             </div>
           )}

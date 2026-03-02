@@ -68,7 +68,7 @@ export default function Accounts() {
         </div>
       </div>
 
-      <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '20px' }}>
+      <div className="grid" style={{ gridTemplateColumns: 'var(--account-grid, repeat(auto-fill, minmax(340px, 1fr)))', gap: '20px' }}>
         {accounts.map((acc) => {
           const color = BROKER_COLORS[acc.broker_name] ?? 'var(--color-accent)'
           const stats = getAccountStats(acc.id)
@@ -89,7 +89,7 @@ export default function Accounts() {
                 </span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-2, 1fr 1fr)', gap: 10, marginBottom: 14 }}>
                 {[
                   { label: 'Positions',    val: String(stats.positions) },
                   { label: 'Transactions', val: String(stats.trades) },

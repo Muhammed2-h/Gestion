@@ -121,7 +121,7 @@ export default function ConfigureStrategyModal({ onClose }: Props) {
         {activeTab === 'Broker' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {/* Broker selector */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-2, 1fr 1fr)', gap: 12 }}>
               <div className="form-group" style={{ margin: 0 }}>
                 <label className="form-label">Broker</label>
                 <select className="form-select" value={broker.broker} onChange={e => setBroker(b => ({ ...b, broker: e.target.value }))}>
@@ -172,7 +172,7 @@ export default function ConfigureStrategyModal({ onClose }: Props) {
               </div>
             )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-2, 1fr 1fr)', gap: 12 }}>
               <div className="form-group" style={{ margin: 0 }}>
                 <label className="form-label">API Key</label>
                 <input
@@ -215,7 +215,7 @@ export default function ConfigureStrategyModal({ onClose }: Props) {
         {/* ══════════════════════════════════════════════════════════ */}
         {activeTab === 'Risk' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-2, 1fr 1fr)', gap: 14 }}>
 
               {/* Kill Switch */}
               <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', background: risk.killSwitch ? 'rgba(16,185,129,0.06)' : 'rgba(239,68,68,0.06)', border: `1px solid ${risk.killSwitch ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)'}`, borderRadius: 'var(--radius-md)' }}>
@@ -261,7 +261,7 @@ export default function ConfigureStrategyModal({ onClose }: Props) {
             </div>
 
             {/* Risk summary */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-3, repeat(3, 1fr))', gap: 10 }}>
               {[
                 { label: 'Max Daily Loss',     val: `₹${risk.maxDailyLoss.toLocaleString('en-IN')}`, color: 'var(--color-loss)' },
                 { label: 'Max Orders / Day',   val: risk.maxOrdersTotal.toString(),                   color: 'var(--color-warning)' },
@@ -298,7 +298,7 @@ export default function ConfigureStrategyModal({ onClose }: Props) {
 
             {strategies.map(s => (
               <div key={s.id} style={{
-                display: 'grid', gridTemplateColumns: 'auto 1fr 140px 120px',
+                display: 'grid', gridTemplateColumns: 'var(--algo-exec-grid, auto 1fr 140px 120px)',
                 alignItems: 'center', gap: 14,
                 padding: '14px 16px',
                 background: s.active ? 'rgba(16,185,129,0.04)' : 'var(--color-bg-primary)',

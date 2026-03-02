@@ -14,6 +14,7 @@ import Analytics from '@/pages/Analytics'
 import SectorView from '@/pages/SectorView'
 import Goals from '@/pages/Goals'
 import AlgoTrading from '@/pages/AlgoTrading'
+import TradingTerminal from '@/pages/TradingTerminal'
 import Integrations from '@/pages/Integrations'
 import Settings from '@/pages/Settings'
 import Watchlist from '@/pages/Watchlist'
@@ -36,7 +37,9 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   // Close sidebar on route change (mobile UX)
-  useEffect(() => { setSidebarOpen(false) }, [location.pathname])
+  useEffect(() => { 
+    if (sidebarOpen) setSidebarOpen(false) 
+  }, [location.pathname, sidebarOpen])
 
   // Close sidebar on Escape key
   useEffect(() => {
@@ -93,6 +96,7 @@ export default function App() {
           <Route path="/sector"       element={<SectorView />} />
           <Route path="/goals"        element={<Goals />} />
           <Route path="/algo"         element={<AlgoTrading />} />
+          <Route path="/trading"      element={<TradingTerminal />} />
           <Route path="/watchlist"    element={<Watchlist />} />
           <Route path="/integrations" element={<Integrations />} />
           <Route path="/settings"     element={<Settings />} />

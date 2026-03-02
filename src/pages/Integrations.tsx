@@ -77,7 +77,7 @@ export default function Integrations() {
           <h2 style={{ fontSize: '1.1rem' }}>Open Source Market Data</h2>
           <span className="badge badge-profit">Free</span>
         </div>
-        <div className="grid grid-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
+        <div className="grid grid-2" style={{ gridTemplateColumns: 'var(--account-grid, repeat(auto-fill, minmax(320px, 1fr)))' }}>
           {DATA_SOURCES.map((src) => (
             <div key={src.id} className="card" style={{
               borderLeft: `3px solid ${src.status === 'active' ? 'var(--color-profit)' : 'var(--color-border)'}`,

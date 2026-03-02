@@ -194,13 +194,15 @@ export default function Auth() {
 const containerStyle: React.CSSProperties = {
   position: 'relative',
   width: '100vw',
-  height: '100vh',
+  minHeight: '100vh',
   backgroundColor: '#0a0a0b',
   color: '#e5e7eb',
-  overflow: 'hidden',
+  overflowY: 'auto',
+  overflowX: 'hidden',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+  padding: '20px 0',
 }
 
 const gridStyle: React.CSSProperties = {
@@ -211,7 +213,7 @@ const gridStyle: React.CSSProperties = {
   minHeight: 600,
   padding: '40px',
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+  gridTemplateColumns: 'var(--auth-grid, repeat(auto-fit, minmax(350px, 1fr)))',
   gap: 60,
   alignItems: 'center',
 }
@@ -252,6 +254,7 @@ const authSectionStyle: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+  width: '100%',
 }
 
 const glassCardStyle: React.CSSProperties = {

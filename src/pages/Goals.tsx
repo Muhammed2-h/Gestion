@@ -105,7 +105,7 @@ export default function Goals() {
       ) : null}
 
       {goals.length > 0 && (
-        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20, marginBottom: 24 }}>
+        <div className="grid" style={{ gridTemplateColumns: 'var(--account-grid, repeat(auto-fill, minmax(320px, 1fr)))', gap: 20, marginBottom: 24 }}>
           {goals.map((g) => {
             const pct = g.target_amount > 0 ? Math.min((g.current_amount / g.target_amount) * 100, 100) : 0
             const days = daysLeft(g.target_date)
@@ -176,7 +176,7 @@ export default function Goals() {
                 <label className="form-label">Goal Name *</label>
                 <input className="form-input" placeholder="e.g. Retirement Corpus" value={form.name} onChange={(e) => set({ name: e.target.value })} autoFocus />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-2, 1fr 1fr)', gap: 12 }}>
                 <div className="form-group">
                   <label className="form-label">Target Amount (₹) *</label>
                   <input className="form-input" type="number" min="1" step="any" placeholder="e.g. 5000000" value={form.target_amount} onChange={(e) => set({ target_amount: e.target.value })} />

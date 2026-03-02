@@ -11,7 +11,8 @@ const SECTOR_COLORS = [
 ]
 
 // ─── Treemap ──────────────────────────────────────────────────────────────────
-const CustomTreemapContent = ({ x, y, width, height, name, value, fill }: any) => {
+const CustomTreemapContent = ({ x, y, width, height, name, value, fill }: { x?: number, y?: number, width?: number, height?: number, name?: string, value?: number, fill?: string }) => {
+  if (width === undefined || height === undefined || x === undefined || y === undefined || value === undefined) return null
   if (width < 40 || height < 30) return null
   return (
     <g>
@@ -221,7 +222,7 @@ export default function SectorView() {
                 {sectorData.map((_, i) => <Cell key={i} fill={SECTOR_COLORS[i % SECTOR_COLORS.length]} />)}
               </Pie>
               <Tooltip
-                formatter={(v: any) => formatCurrency(Number(v), true)}
+                formatter={(v: unknown) => formatCurrency(Number(v), true)}
                 contentStyle={{ background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: 8, fontSize: 12 }}
               />
             </PieChart>

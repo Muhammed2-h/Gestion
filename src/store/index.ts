@@ -315,7 +315,7 @@ export const usePortfolioStore = create<PortfolioState>()(
       onRehydrateStorage: () => (state) => {
         if (state) {
           // after rehydration, recompute summary
-          state.summary = summary
+          state.summary = derivePortfolioSummary(state.holdings)
         }
       },
       storage: encryptedStorage as any,

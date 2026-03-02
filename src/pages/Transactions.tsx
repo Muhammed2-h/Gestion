@@ -50,48 +50,50 @@ export default function Transactions() {
         </div>
       ) : (
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Date</th><th>Account</th><th>Symbol</th><th>Exch</th><th>Type</th>
-                <th style={{ textAlign: 'right' }}>Qty</th>
-                <th style={{ textAlign: 'right' }}>Price (₹)</th>
-                <th style={{ textAlign: 'right' }}>STT (₹)</th>
-                <th style={{ textAlign: 'right' }}>Total (₹)</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((t) => {
-                const total = t.price * t.quantity + t.brokerage + t.stt + t.exchange_charges + t.gst
-                return (
-                  <tr key={t.id}>
-                    <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>{formatDate(t.transaction_date)}</td>
-                    <td style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{getAccountName(t.account_id)}</td>
-                    <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{t.symbol}</td>
-                    <td><span className="chip" style={{ fontSize: '0.68rem' }}>{t.exchange}</span></td>
-                    <td><span className={`badge ${TYPE_BADGE[t.type]}`}>{t.type}</span></td>
-                    <td className="col-num">{t.quantity}</td>
-                    <td className="col-num">{formatCurrency(t.price)}</td>
-                    <td className="col-num" style={{ color: 'var(--text-muted)' }}>{t.stt > 0 ? formatCurrency(t.stt) : '—'}</td>
-                    <td className="col-num" style={{ fontWeight: 700, color: t.type === 'SELL' ? 'var(--color-profit)' : 'var(--color-loss)' }}>
-                      {formatCurrency(total, true)}
-                    </td>
-                    <td>
-                      {confirmDel === t.id ? (
-                        <div className="flex gap-1">
-                          <button className="btn btn-danger btn-sm" style={{ fontSize: '0.7rem', padding: '2px 8px' }} onClick={() => { deleteTransaction(t.id); setConfirmDel(null) }}>Confirm</button>
-                          <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.7rem', padding: '2px 8px' }} onClick={() => setConfirmDel(null)}>Cancel</button>
-                        </div>
-                      ) : (
-                        <button className="btn btn-ghost btn-icon" style={{ color: 'var(--text-muted)', padding: 4 }} onClick={() => setConfirmDel(t.id)}><Trash2 size={13} /></button>
-                      )}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+          <div className="table-scroll-wrapper">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th><th>Account</th><th>Symbol</th><th>Exch</th><th>Type</th>
+                  <th style={{ textAlign: 'right' }}>Qty</th>
+                  <th style={{ textAlign: 'right' }}>Price (₹)</th>
+                  <th style={{ textAlign: 'right' }}>STT (₹)</th>
+                  <th style={{ textAlign: 'right' }}>Total (₹)</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((t) => {
+                  const total = t.price * t.quantity + t.brokerage + t.stt + t.exchange_charges + t.gst
+                  return (
+                    <tr key={t.id}>
+                      <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>{formatDate(t.transaction_date)}</td>
+                      <td style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{getAccountName(t.account_id)}</td>
+                      <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{t.symbol}</td>
+                      <td><span className="chip" style={{ fontSize: '0.68rem' }}>{t.exchange}</span></td>
+                      <td><span className={`badge ${TYPE_BADGE[t.type]}`}>{t.type}</span></td>
+                      <td className="col-num">{t.quantity}</td>
+                      <td className="col-num">{formatCurrency(t.price)}</td>
+                      <td className="col-num" style={{ color: 'var(--text-muted)' }}>{t.stt > 0 ? formatCurrency(t.stt) : '—'}</td>
+                      <td className="col-num" style={{ fontWeight: 700, color: t.type === 'SELL' ? 'var(--color-profit)' : 'var(--color-loss)' }}>
+                        {formatCurrency(total, true)}
+                      </td>
+                      <td>
+                        {confirmDel === t.id ? (
+                          <div className="flex gap-1">
+                            <button className="btn btn-danger btn-sm" style={{ fontSize: '0.7rem', padding: '2px 8px' }} onClick={() => { deleteTransaction(t.id); setConfirmDel(null) }}>Confirm</button>
+                            <button className="btn btn-ghost btn-sm" style={{ fontSize: '0.7rem', padding: '2px 8px' }} onClick={() => setConfirmDel(null)}>Cancel</button>
+                          </div>
+                        ) : (
+                          <button className="btn btn-ghost btn-icon" style={{ color: 'var(--text-muted)', padding: 4 }} onClick={() => setConfirmDel(t.id)}><Trash2 size={13} /></button>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

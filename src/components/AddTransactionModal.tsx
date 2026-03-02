@@ -100,7 +100,7 @@ export default function AddTransactionModal({ onClose }: Props) {
             ))}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-2, 1fr 1fr)', gap: 12 }}>
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
               <label className="form-label">Account *</label>
               <select className="form-select" value={form.account_id} onChange={(e) => set({ account_id: e.target.value })}>
@@ -151,7 +151,7 @@ export default function AddTransactionModal({ onClose }: Props) {
             <summary style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600, userSelect: 'none', listStyle: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ fontSize: '0.65rem' }}>▶</span> Transaction Charges (optional)
             </summary>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-2, 1fr 1fr)', gap: 12, marginTop: 12 }}>
               {[
                 { label: 'Brokerage (₹)', key: 'brokerage' },
                 { label: 'STT (₹)', key: 'stt' },

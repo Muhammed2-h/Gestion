@@ -182,10 +182,7 @@ function RuleRow({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 1fr 120px 72px auto',
-        gap: 8, alignItems: 'end'
-      }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'var(--algo-cond-grid, 1fr 1fr 120px 72px auto)', gap: 12, alignItems: 'end', marginBottom: 16 }}>
         {/* Indicator */}
         <div className="form-group" style={{ margin: 0 }}>
           <label className="form-label" style={{ fontSize: '0.72rem', marginBottom: 4 }}>
@@ -341,7 +338,7 @@ export default function CreateStrategyModal({ onClose }: Props) {
         </div>
 
         {/* ── Strategy Params ──────────────────────────────────────────── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 12, marginBottom: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'var(--algo-action-grid, 2fr 1fr 1fr 1fr)', gap: 12, marginBottom: 20 }}>
           <div className="form-group" style={{ margin: 0 }}>
             <label className="form-label">Strategy Name</label>
             <input className="form-input" placeholder="e.g. RSI Reverb v2" value={name} onChange={e => setName(e.target.value)} />

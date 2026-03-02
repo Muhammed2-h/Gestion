@@ -11,6 +11,7 @@ const navItems = [
   { label: 'Dashboard',    path: '/',             icon: LayoutDashboard, section: 'OVERVIEW'   },
   { label: 'Holdings',     path: '/holdings',     icon: Briefcase,       section: 'OVERVIEW'   },
   { label: 'Transactions', path: '/transactions', icon: ArrowLeftRight,  section: 'ACTIVITY'   },
+  { label: 'Trading',      path: '/trading',      icon: Zap,             section: 'ACTIVITY'   },
   { label: 'Accounts',     path: '/accounts',     icon: Wallet,          section: 'ACTIVITY'   },
   { label: 'Analytics',    path: '/analytics',    icon: TrendingUp,      section: 'INSIGHTS'   },
   { label: 'Sector View',  path: '/sector',       icon: PieChart,        section: 'INSIGHTS'   },
