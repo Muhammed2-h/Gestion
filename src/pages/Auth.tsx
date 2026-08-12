@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/authStore'
 import { Mail, Lock, User, ArrowRight, TrendingUp, Shield, Globe, RefreshCw } from 'lucide-react'
+import { Card } from '@/components/ui/Card'
 
 export default function Auth() {
   const login = useAuthStore((s) => s.login)
@@ -84,32 +85,32 @@ export default function Auth() {
 
         {/* Right Side: Auth Form */}
         <div className="flex justify-center items-center w-full">
-          <div className={`w-full max-w-[420px] bg-bg-card border border-border rounded-2xl p-8 md:p-10 shadow-2xl ${mounted ? 'animate-fade-in' : ''}`}>
+          <Card className={`w-full max-w-[420px] p-8 md:p-10 shadow-xl ${mounted ? 'animate-fade-in' : ''}`}>
             <div className="mb-8 text-center">
-              <h2 className="m-0 mb-2 text-[1.6rem] font-bold text-primary">
+              <h2 className="m-0 mb-2 text-2xl font-bold text-primary">
                 {isLogin ? 'Welcome back' : 'Create an account'}
               </h2>
-              <p className="m-0 text-[0.85rem] text-secondary">
+              <p className="m-0 text-sm text-secondary">
                 {isLogin ? 'Enter your credentials to access your terminal.' : 'Start dominating the markets today.'}
               </p>
             </div>
 
             {error && (
-              <div className="mb-5 p-3 px-3.5 bg-loss/10 border border-loss/20 rounded-xl flex items-center gap-2.5">
+              <div className="mb-6 p-3 px-4 bg-loss/10 border border-loss/20 rounded-lg flex items-center gap-2.5">
                 <Shield size={16} className="text-loss" />
-                <span className="text-[0.8rem] text-loss font-semibold">{error}</span>
+                <span className="text-xs text-loss font-semibold">{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               {!isLogin && (
                 <div className="form-group mb-0">
-                  <label className="form-label text-xs font-semibold mb-1.5">Full Name</label>
+                  <label className="form-label text-xs font-semibold mb-1.5 block">Full Name</label>
                   <div className="relative flex items-center">
-                    <User size={16} className="text-muted absolute left-3.5" />
+                    <User size={16} className="text-muted absolute left-3" />
                     <input
                       type="text"
-                      className="form-input bg-bg-primary pl-10 h-11 border-border"
+                      className="form-input bg-bg-primary pl-9 h-11 border-border w-full"
                       placeholder="John Doe"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -120,12 +121,12 @@ export default function Auth() {
               )}
 
               <div className="form-group mb-0">
-                <label className="form-label text-xs font-semibold mb-1.5">Email Address</label>
+                <label className="form-label text-xs font-semibold mb-1.5 block">Email Address</label>
                 <div className="relative flex items-center">
-                  <Mail size={16} className="text-muted absolute left-3.5" />
+                  <Mail size={16} className="text-muted absolute left-3" />
                   <input
                     type="email"
-                    className="form-input bg-bg-primary pl-10 h-11 border-border"
+                    className="form-input bg-bg-primary pl-9 h-11 border-border w-full"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -135,12 +136,12 @@ export default function Auth() {
               </div>
 
               <div className="form-group mb-0">
-                <label className="form-label text-xs font-semibold mb-1.5">Password</label>
+                <label className="form-label text-xs font-semibold mb-1.5 block">Password</label>
                 <div className="relative flex items-center">
-                  <Lock size={16} className="text-muted absolute left-3.5" />
+                  <Lock size={16} className="text-muted absolute left-3" />
                   <input
                     type="password"
-                    className="form-input bg-bg-primary pl-10 h-11 border-border"
+                    className="form-input bg-bg-primary pl-9 h-11 border-border w-full"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -150,27 +151,27 @@ export default function Auth() {
               </div>
 
               {isLogin && (
-                <div className="text-right -mt-1.5">
-                  <button type="button" className="btn btn-ghost text-[0.75rem] text-accent p-0 hover:bg-transparent hover:underline">
+                <div className="text-right -mt-2">
+                  <button type="button" className="btn btn-ghost text-xs text-muted p-0 hover:bg-transparent hover:text-primary transition-colors">
                     Forgot password?
                   </button>
                 </div>
               )}
 
-              <button type="submit" className="btn btn-primary h-12 mt-2 justify-center font-bold text-base shadow-lg" disabled={loading || attempts >= 5}>
+              <button type="submit" className="btn btn-primary h-11 mt-2 justify-center font-bold text-sm shadow-md w-full" disabled={loading || attempts >= 5}>
                 {loading ? (
-                  <><RefreshCw size={16} className="animate-spin" /> Verifying...</>
+                  <><RefreshCw size={16} className="animate-spin mr-2" /> Verifying...</>
                 ) : (
-                  <>{isLogin ? 'Sign In' : 'Sign Up'} <ArrowRight size={16} /></>
+                  <>{isLogin ? 'Sign In' : 'Sign Up'} <ArrowRight size={16} className="ml-2" /></>
                 )}
               </button>
             </form>
 
-            <div className="mt-6 text-center text-[0.85rem] text-secondary">
+            <div className="mt-8 text-center text-sm text-secondary">
               {isLogin ? "Don't have an account? " : 'Already have an account? '}
               <button
                 type="button"
-                className="btn btn-ghost text-accent p-0 font-bold border-b border-transparent hover:bg-transparent hover:underline"
+                className="btn btn-ghost text-primary p-0 font-bold hover:bg-transparent hover:underline"
                 onClick={() => {
                   setIsLogin(!isLogin)
                   setError('')
@@ -179,7 +180,7 @@ export default function Auth() {
                 {isLogin ? 'Sign up' : 'Sign in'}
               </button>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     </div>
