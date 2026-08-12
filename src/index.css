@@ -1778,6 +1778,7 @@ input:autofill:active {
 .min-w-\[160px\] { min-width: 160px; }
 .min-w-\[200px\] { min-width: 200px; }
 .min-w-\[700px\] { min-width: 700px; }
+.left-3 { left: var(--space-3); }
 .left-3\.5 { left: 14px; }
 
 /* Typography */
