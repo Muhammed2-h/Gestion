@@ -756,6 +756,17 @@ input:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+input:autofill,
+input:autofill:hover, 
+input:autofill:focus, 
+input:autofill:active {
+  background-color: var(--color-bg-primary) !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  box-shadow: 0 0 0 1000px var(--color-bg-primary) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 .form-select {
   cursor: pointer;
 }
