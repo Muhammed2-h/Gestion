@@ -49,33 +49,33 @@ export default function Auth() {
       <div className="relative z-10 w-full max-w-6xl min-h-[600px] p-10 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         
         {/* Left Side: Branding / Landing Info */}
-        <div className={`flex flex-col justify-center ${mounted ? 'animate-fade-in' : ''}`}>
+        <div className={`flex flex-col justify-center max-w-md mx-auto ${mounted ? 'animate-fade-in' : ''}`}>
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-11 h-11 rounded-xl bg-accent flex items-center justify-center text-[1.4rem] font-black text-white">G</div>
-            <h1 className="m-0 text-[2.5rem] font-black tracking-tight text-white">
+            <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center text-xl font-black text-white">G</div>
+            <h1 className="m-0 text-3xl font-black tracking-tight text-white">
               Gestion
             </h1>
           </div>
-          <h2 className="text-[1.8rem] font-bold m-0 mb-4 leading-tight text-primary">
+          <h2 className="text-2xl font-bold m-0 mb-4 leading-tight text-primary">
             Master your portfolio with next-gen intelligence.
           </h2>
-          <p className="text-[1.05rem] text-secondary leading-relaxed max-w-[450px] m-0 mb-10">
+          <p className="text-base text-secondary leading-relaxed mb-10">
             Unleash institutional-grade analytics, smart algorithmic trading, and real-time market insights tailored for individual investors.
           </p>
 
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-6">
             {[
-              { icon: <TrendingUp size={20} className="text-accent" />, title: 'Real-time Analytics', desc: 'Live pricing, CAGR, and XIRR tracking.' },
-              { icon: <Globe size={20} className="text-info" />, title: 'Deep Market Sectors', desc: 'Instant exposure analysis across 200+ equities.' },
-              { icon: <Shield size={20} className="text-warning" />, title: 'Algorithmic Trading', desc: 'Configure powerful risk-managed strategies.' },
+              { icon: <TrendingUp size={18} className="text-accent" />, title: 'Real-time Analytics', desc: 'Live pricing, CAGR, and XIRR tracking.' },
+              { icon: <Globe size={18} className="text-info" />, title: 'Deep Market Sectors', desc: 'Instant exposure analysis across 200+ equities.' },
+              { icon: <Shield size={18} className="text-warning" />, title: 'Algorithmic Trading', desc: 'Configure powerful risk-managed strategies.' },
             ].map((f, i) => (
-              <div key={i} className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-bg-card border border-border flex items-center justify-center flex-shrink-0">
+              <div key={i} className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-bg-secondary border border-border/50 flex items-center justify-center flex-shrink-0">
                   {f.icon}
                 </div>
                 <div>
-                  <h4 className="m-0 mb-1 text-[0.95rem] font-bold text-primary">{f.title}</h4>
-                  <p className="m-0 text-[0.85rem] text-secondary">{f.desc}</p>
+                  <h4 className="m-0 mb-0.5 text-sm font-bold text-primary">{f.title}</h4>
+                  <p className="m-0 text-xs text-secondary">{f.desc}</p>
                 </div>
               </div>
             ))}
@@ -171,7 +171,10 @@ export default function Auth() {
               <button
                 type="button"
                 className="btn btn-ghost text-accent p-0 font-bold border-b border-transparent hover:bg-transparent hover:underline"
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={() => {
+                  setIsLogin(!isLogin)
+                  setError('')
+                }}
               >
                 {isLogin ? 'Sign up' : 'Sign in'}
               </button>
