@@ -46,11 +46,11 @@ export default function Auth() {
   }
 
   return (
-    <div className="w-screen min-h-screen bg-bg-primary text-primary flex justify-center items-center py-5 relative overflow-x-hidden overflow-y-auto">
+    <div className="w-full min-h-screen bg-bg-primary text-primary flex justify-center items-center py-5 relative overflow-x-hidden overflow-y-auto">
       <div className="relative z-10 w-full max-w-6xl min-h-[600px] p-10 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         
         {/* Left Side: Branding / Landing Info */}
-        <div className={`flex flex-col justify-center max-w-md mx-auto ${mounted ? 'animate-fade-in' : ''}`}>
+        <div className={`flex flex-col justify-center max-w-md mx-auto order-2 md:order-1 ${mounted ? 'animate-fade-in' : ''}`}>
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center text-xl font-black text-white">G</div>
             <h1 className="m-0 text-3xl font-black tracking-tight text-white">
@@ -84,7 +84,7 @@ export default function Auth() {
         </div>
 
         {/* Right Side: Auth Form */}
-        <div className="flex justify-center items-center w-full">
+        <div className="flex justify-center items-center w-full order-1 md:order-2">
           <Card className={`w-full max-w-[420px] p-8 md:p-10 shadow-xl ${mounted ? 'animate-fade-in' : ''}`}>
             <div className="mb-8 text-center">
               <h2 className="m-0 mb-2 text-2xl font-bold text-primary">
