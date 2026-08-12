@@ -111,7 +111,7 @@ export default function Auth() {
                     <input
                       id="name"
                       type="text"
-                      className="form-input bg-bg-primary pl-9 h-11 border-border w-full"
+                      className="form-input bg-bg-primary pl-10 h-11 border-border w-full"
                       placeholder="John Doe"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -128,7 +128,7 @@ export default function Auth() {
                   <input
                     id="email"
                     type="email"
-                    className="form-input bg-bg-primary pl-9 h-11 border-border w-full"
+                    className="form-input bg-bg-primary pl-10 h-11 border-border w-full"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -144,7 +144,7 @@ export default function Auth() {
                   <input
                     id="password"
                     type="password"
-                    className="form-input bg-bg-primary pl-9 h-11 border-border w-full"
+                    className="form-input bg-bg-primary pl-10 h-11 border-border w-full"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
