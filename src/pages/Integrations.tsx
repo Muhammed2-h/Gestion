@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { Key, RefreshCw, CheckCircle2, ExternalLink, Info, Globe, Wifi } from 'lucide-react'
+import { PageHeader } from '@/components/ui/PageHeader'
+import { Card } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
 
 const DATA_SOURCES = [
   {
@@ -28,7 +31,7 @@ const DATA_SOURCES = [
   },
   {
     id: 'ALPHAVANTAGE',
-    name: 'Alpha Vantage (Optional)',
+    name: 'Alpha Vantage',
     description: 'Free tier supports 25 requests/day for global equity data. Useful as a fallback for historical data.',
     requiresKey: true,
     status: 'inactive',
@@ -37,7 +40,7 @@ const DATA_SOURCES = [
 ]
 
 const BROKER_INTEGRATIONS = [
-  { id: 'zerodha',    name: 'Zerodha (Kite Connect)', logo: 'Z', color: '#387ed1', docUrl: 'https://kite.trade/docs/connect/v3/' },
+  { id: 'zerodha',   name: 'Zerodha (Kite Connect)', logo: 'Z', color: '#387ed1', docUrl: 'https://kite.trade/docs/connect/v3/' },
   { id: 'upstox',    name: 'Upstox API',             logo: 'U', color: '#6366F1', docUrl: 'https://upstox.com/developer/api-documentation/' },
   { id: 'fyers',     name: 'Fyers API',              logo: 'F', color: '#00b94a', docUrl: 'https://myapi.fyers.in/docs/' },
   { id: 'dhan',      name: 'Dhan HQ',                logo: 'D', color: '#f97316', docUrl: 'https://dhanhq.co/docs/latest/' },
@@ -62,149 +65,173 @@ export default function Integrations() {
   }
 
   return (
-    <div className="app-content animate-fade-in">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Integrations</h1>
-          <p className="page-subtitle">Manage open source data sources and broker API connections</p>
-        </div>
-      </div>
+    <div className="app-content animate-fade-in flex flex-col h-full overflow-auto">
+      <PageHeader 
+        title="Integrations" 
+        subtitle="Manage open source data sources and broker API connections"
+      />
 
       {/* Open Source Data Sources */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <Globe size={20} color="var(--color-accent)" />
-          <h2 style={{ fontSize: '1.1rem' }}>Open Source Market Data</h2>
-          <span className="badge badge-profit">Free</span>
+        <div className="flex items-center gap-3 mb-5">
+          <Globe size={20} className="text-accent" />
+          <h2 className="text-lg font-bold">Open Source Market Data</h2>
+          <Badge variant="profit" className="ml-2">Free</Badge>
         </div>
-        <div className="grid grid-2" style={{ gridTemplateColumns: 'var(--account-grid, repeat(auto-fill, minmax(320px, 1fr)))' }}>
+        
+        <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
           {DATA_SOURCES.map((src) => (
-            <div key={src.id} className="card" style={{
-              borderLeft: `3px solid ${src.status === 'active' ? 'var(--color-profit)' : 'var(--color-border)'}`,
-            }}>
+            <Card key={src.id} className="flex flex-col border-l-4" style={{ borderLeftColor: src.status === 'active' ? 'var(--color-profit)' : 'var(--color-border)' }}>
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>{src.name}</div>
-                  {src.requiresKey && <span className="badge badge-warning" style={{ marginBottom: 8 }}>API Key Required</span>}
+                  <div className="font-bold text-primary mb-1">{src.name}</div>
+                  {src.requiresKey && <Badge variant="warning" className="mb-2 text-[0.65rem] py-0 px-1.5">API Key Required</Badge>}
                 </div>
-                <div className="flex items-center gap-2">
-                  <span style={{
-                    width: 8, height: 8, borderRadius: '50%',
-                    background: src.status === 'active' ? 'var(--color-profit)' : 'var(--color-border-light)',
-                    display: 'block',
-                  }} />
-                  <span style={{ fontSize: '0.72rem', color: src.status === 'active' ? 'var(--color-profit)' : 'var(--text-muted)' }}>
+                <div className="flex items-center gap-1.5">
+                  <span className={`w-2 h-2 rounded-full ${src.status === 'active' ? 'bg-profit' : 'bg-border-light'}`} />
+                  <span className={`text-[0.7rem] font-bold ${src.status === 'active' ? 'text-profit' : 'text-muted'}`}>
                     {src.status === 'active' ? 'Active' : 'Inactive'}
                   </span>
                 </div>
               </div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: 12 }}>{src.description}</p>
+              
+              <p className="text-xs text-secondary mb-4 flex-1">{src.description}</p>
+              
               {src.requiresKey && (
-                <div className="form-group mb-3">
-                  <input className="form-input" placeholder="Enter API Key…" style={{ fontSize: '0.82rem' }} />
+                <div className="form-group mb-4">
+                  <input className="form-input text-xs p-2" placeholder="Enter API Key…" />
                 </div>
               )}
-              <a href={src.link} target="_blank" rel="noreferrer"
-                className="btn btn-ghost btn-sm" style={{ fontSize: '0.78rem' }}>
+              
+              <a 
+                href={src.link} 
+                target="_blank" 
+                rel="noreferrer"
+                className="btn btn-outline btn-sm self-start text-xs mt-auto" 
+              >
                 <ExternalLink size={12} /> View Docs
               </a>
-            </div>
+            </Card>
           ))}
         </div>
       </div>
 
-      <div className="divider" />
+      <div className="border-b border-border my-2"></div>
 
       {/* Broker API Integrations */}
       <div className="mt-8">
         <div className="flex items-center gap-3 mb-2">
-          <Wifi size={20} color="var(--color-info)" />
-          <h2 style={{ fontSize: '1.1rem' }}>Broker API Connections</h2>
+          <Wifi size={20} className="text-info" />
+          <h2 className="text-lg font-bold">Broker API Connections</h2>
         </div>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: 20 }}>
+        
+        <p className="text-sm text-muted mb-5">
           Connect your broker API to automatically sync live positions and executed trades without CSV uploads.
           Your API keys are encrypted using your master vault password.
         </p>
 
-        <div className="card mb-4" style={{ background: 'var(--color-info-bg)', borderColor: 'rgba(59,130,246,0.2)', padding: '14px 20px' }}>
-          <div className="flex items-center gap-3">
-            <Info size={16} color="var(--color-info)" />
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0 }}>
+        <Card className="mb-6 p-4 border-info bg-info/10">
+          <div className="flex items-start gap-3">
+            <Info size={18} className="text-info flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-secondary m-0">
               API Keys are stored encrypted in your local database. <strong>Never shared externally.</strong>{' '}
               Gestion only requests read-only scopes for positions and order history.
             </p>
           </div>
-        </div>
+        </Card>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="flex flex-col gap-4">
           {BROKER_INTEGRATIONS.map((b) => {
             const conn = brokerKeys[b.id]
             const isEditing = editing === b.id
             return (
-              <div key={b.id} className="card" style={{ padding: '16px 24px' }}>
+              <Card key={b.id} className="p-4 md:p-5">
                 <div className="flex items-center gap-4 flex-wrap">
                   {/* Logo */}
-                  <div style={{
-                    width: 40, height: 40, borderRadius: 'var(--radius-md)',
-                    background: `${b.color}22`, display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', fontWeight: 800, color: b.color, fontSize: '1rem', flexShrink: 0,
-                  }}>{b.logo}</div>
-
-                  <div style={{ flex: 1, minWidth: 160 }}>
-                    <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 }}>{b.name}</div>
-                    {conn?.connected
-                      ? <span className="badge badge-profit"><CheckCircle2 size={10} /> Connected · Key: ••••{conn.apiKey.slice(-4)}</span>
-                      : <span className="badge" style={{ background: 'var(--color-bg-card-hover)', color: 'var(--text-muted)' }}>Not Connected</span>}
+                  <div 
+                    className="w-10 h-10 rounded-lg flex items-center justify-center font-black text-lg flex-shrink-0"
+                    style={{ background: `${b.color}22`, color: b.color }}
+                  >
+                    {b.logo}
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <a href={b.docUrl} target="_blank" rel="noreferrer" className="btn btn-ghost btn-sm">
+                  <div className="flex-1 min-w-[160px]">
+                    <div className="font-bold text-primary mb-1">{b.name}</div>
+                    {conn?.connected ? (
+                      <Badge variant="profit" className="flex items-center gap-1 w-max text-[0.65rem] py-0 px-2">
+                        <CheckCircle2 size={10} /> Connected · Key: ••••{conn.apiKey.slice(-4)}
+                      </Badge>
+                    ) : (
+                      <Badge variant="default" className="text-[0.65rem] py-0 px-2 w-max">Not Connected</Badge>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2 mt-3 md:mt-0 w-full md:w-auto">
+                    <a href={b.docUrl} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm flex-1 md:flex-none">
                       <ExternalLink size={12} /> API Docs
                     </a>
-                    {conn?.connected
-                      ? <>
-                          <button className="btn btn-outline btn-sm"><RefreshCw size={12} /> Re-Sync</button>
-                          <button className="btn btn-danger btn-sm" onClick={() => {
+                    {conn?.connected ? (
+                      <>
+                        <button className="btn btn-outline btn-sm flex-1 md:flex-none"><RefreshCw size={12} /> Re-Sync</button>
+                        <button 
+                          className="btn btn-danger btn-sm flex-1 md:flex-none bg-loss text-white border-transparent" 
+                          onClick={() => {
                             const updated = { ...brokerKeys }
                             delete updated[b.id]
                             setBrokerKeys(updated)
-                          }}>Disconnect</button>
-                        </>
-                      : <button className="btn btn-primary btn-sm" onClick={() => setEditing(isEditing ? null : b.id)}>
-                          <Key size={12} /> {isEditing ? 'Cancel' : 'Add API Key'}
-                        </button>}
+                          }}
+                        >
+                          Disconnect
+                        </button>
+                      </>
+                    ) : (
+                      <button 
+                        className={`btn btn-sm flex-1 md:flex-none ${isEditing ? 'btn-outline' : 'btn-primary'}`} 
+                        onClick={() => setEditing(isEditing ? null : b.id)}
+                      >
+                        <Key size={12} /> {isEditing ? 'Cancel' : 'Add API Key'}
+                      </button>
+                    )}
                   </div>
                 </div>
 
                 {/* Inline Key Form */}
                 {isEditing && (
-                  <div style={{
-                    marginTop: 16, padding: '16px', background: 'var(--color-bg-primary)',
-                    borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)',
-                  }}>
-                    <div className="grid grid-2 mb-3" style={{ gap: 12 }}>
-                      <div className="form-group">
-                        <label className="form-label">API Key *</label>
-                        <input className="form-input" placeholder="Your API key…" value={keyInput}
-                          onChange={(e) => setKeyInput(e.target.value)} type="text" />
+                  <div className="mt-5 p-4 bg-bg-primary rounded-lg border border-border">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div className="form-group mb-0">
+                        <label className="form-label text-xs font-semibold mb-1.5">API Key *</label>
+                        <input 
+                          className="form-input bg-bg-card p-2 text-sm border-border" 
+                          placeholder="Your API key…" 
+                          value={keyInput}
+                          onChange={(e) => setKeyInput(e.target.value)} 
+                          type="text" 
+                          autoFocus
+                        />
                       </div>
-                      <div className="form-group">
-                        <label className="form-label">API Secret</label>
-                        <input className="form-input" placeholder="Your API secret…" value={secretInput}
-                          onChange={(e) => setSecretInput(e.target.value)} type="password" />
+                      <div className="form-group mb-0">
+                        <label className="form-label text-xs font-semibold mb-1.5">API Secret</label>
+                        <input 
+                          className="form-input bg-bg-card p-2 text-sm border-border" 
+                          placeholder="Your API secret…" 
+                          value={secretInput}
+                          onChange={(e) => setSecretInput(e.target.value)} 
+                          type="password" 
+                        />
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <button className="btn btn-primary btn-sm" onClick={() => handleConnect(b.id)}>
-                        <CheckCircle2 size={13} /> Save & Connect
+                      <button className="btn btn-primary btn-sm px-4" onClick={() => handleConnect(b.id)}>
+                        <CheckCircle2 size={14} /> Save & Connect
                       </button>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                      <span className="text-xs text-muted">
                         Stored encrypted · Read-only access only
                       </span>
                     </div>
                   </div>
                 )}
-              </div>
+              </Card>
             )
           })}
         </div>

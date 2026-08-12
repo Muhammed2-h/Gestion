@@ -5,7 +5,10 @@ import {
 } from 'recharts'
 import { usePortfolioStore } from '@/store'
 import { formatCurrency, formatPct, computeTaxReport } from '@/lib/utils'
-import { Download } from 'lucide-react'
+import { Download, TrendingUp, TrendingDown, Scale, Target, Activity } from 'lucide-react'
+import { PageHeader } from '@/components/ui/PageHeader'
+import { Card } from '@/components/ui/Card'
+import { StatCard } from '@/components/ui/StatCard'
 
 export default function Analytics() {
   const { summary, transactions, holdings } = usePortfolioStore()
@@ -42,111 +45,139 @@ export default function Analytics() {
 
   if (isEmpty) {
     return (
-      <div className="app-content animate-fade-in">
-        <div className="page-header"><div><h1 className="page-title">Analytics</h1><p className="page-subtitle">No data yet</p></div></div>
-        <div className="card" style={{ textAlign: 'center', padding: '60px 24px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: 16 }}>📈</div>
-          <h3 style={{ marginBottom: 8 }}>No Analytics Yet</h3>
-          <p style={{ color: 'var(--text-muted)' }}>Add transactions to see performance analytics, returns, and tax reports.</p>
-        </div>
+      <div className="app-content animate-fade-in flex flex-col items-center justify-center">
+        <PageHeader title="Analytics" subtitle="No data yet" />
+        <Card className="text-center p-10 max-w-2xl mx-auto mt-10 w-full">
+          <div className="text-5xl mb-4">📈</div>
+          <h3 className="mb-2">No Analytics Yet</h3>
+          <p className="text-muted">Add transactions to see performance analytics, returns, and tax reports.</p>
+        </Card>
       </div>
     )
   }
 
   return (
-    <div className="app-content animate-fade-in">
-      <div className="page-header">
-        <div><h1 className="page-title">Analytics</h1><p className="page-subtitle">Performance, risk, and tax analysis</p></div>
-        <div className="page-actions">
-          <button className="btn btn-outline btn-sm"><Download size={14} /> Tax Report PDF</button>
-        </div>
+    <div className="app-content animate-fade-in flex flex-col h-full overflow-auto">
+      <PageHeader 
+        title="Analytics" 
+        subtitle="Performance, risk, and tax analysis"
+        actions={<button className="btn btn-outline btn-sm"><Download size={14} /> Tax Report PDF</button>}
+      />
+
+      <div className="grid grid-4 gap-5 mb-6">
+        <StatCard 
+          label="Absolute Return" 
+          value={formatPct(summary.total_pnl_pct)} 
+          trend={summary.total_pnl_pct >= 0 ? 'up' : 'down'}
+          icon={summary.total_pnl_pct >= 0 ? <TrendingUp /> : <TrendingDown />}
+        />
+        <StatCard 
+          label="Total P&L" 
+          value={formatCurrency(summary.total_pnl, true)} 
+          trend={summary.total_pnl >= 0 ? 'up' : 'down'}
+          icon={summary.total_pnl >= 0 ? <TrendingUp /> : <TrendingDown />}
+        />
+        <StatCard 
+          label="STCG" 
+          value={formatCurrency(stcg, true)} 
+          trend="down"
+          icon={<Activity />}
+        />
+        <StatCard 
+          label="LTCG" 
+          value={formatCurrency(ltcg, true)} 
+          trend="up"
+          icon={<Scale />}
+        />
       </div>
 
-      <div className="grid grid-4 mb-6">
-        {[
-          { label: 'Absolute Return', val: formatPct(summary.total_pnl_pct), good: summary.total_pnl_pct >= 0 },
-          { label: 'Total P&L',       val: formatCurrency(summary.total_pnl, true), good: summary.total_pnl >= 0 },
-          { label: 'STCG',            val: formatCurrency(stcg, true),  good: false },
-          { label: 'LTCG',            val: formatCurrency(ltcg, true),  good: true },
-        ].map(({ label, val, good }) => (
-          <div key={label} className="stat-card">
-            <div className="stat-label">{label}</div>
-            <div className="stat-value" style={{ fontSize: '1.3rem', color: good ? 'var(--color-profit)' : 'var(--color-loss)' }}>{val}</div>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-2 mb-6">
+      <div className="grid grid-2 gap-5 mb-6">
         {/* Returns bar chart */}
-        <div className="card">
-          <h3 style={{ marginBottom: 4 }}>Portfolio Returns</h3>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 20 }}>Based on your actual transactions</p>
-          {returnsBars.length > 0 ? (
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={returnsBars} barCategoryGap="50%">
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                <XAxis dataKey="period" tick={{ fontSize: 12, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} unit="%" />
-                <Tooltip formatter={(v: any) => [`${Number(v)}%`, 'Return']} contentStyle={{ background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: 8, fontSize: 12, color: 'var(--text-primary)' }} />
-                <Bar dataKey="ret" radius={[4,4,0,0]}>
-                  {returnsBars.map((e, i) => <Cell key={i} fill={e.ret >= 0 ? 'var(--color-profit)' : 'var(--color-loss)'} />)}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          ) : <div style={{ height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>No return data yet</div>}
-        </div>
+        <Card className="flex flex-col">
+          <div className="mb-6">
+            <h3 className="font-bold">Portfolio Returns</h3>
+            <p className="text-xs text-muted">Based on your actual transactions</p>
+          </div>
+          <div className="flex-1 flex items-center justify-center min-h-[220px]">
+            {returnsBars.length > 0 ? (
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={returnsBars} barCategoryGap="50%">
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                  <XAxis dataKey="period" tick={{ fontSize: 12, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} unit="%" />
+                  <Tooltip formatter={(v: any) => [`${Number(v)}%`, 'Return']} contentStyle={{ background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: 8, fontSize: 12, color: 'var(--text-primary)' }} />
+                  <Bar dataKey="ret" radius={[4,4,0,0]}>
+                    {returnsBars.map((e, i) => <Cell key={i} fill={e.ret >= 0 ? 'var(--color-profit)' : 'var(--color-loss)'} />)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : <div className="text-muted text-sm">No return data yet</div>}
+          </div>
+        </Card>
 
         {/* Radar */}
-        <div className="card">
-          <h3 style={{ marginBottom: 4 }}>Portfolio Score</h3>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 8 }}>Quality benchmark (0-100)</p>
-          <ResponsiveContainer width="100%" height={220}>
-            <RadarChart data={scores} cx="50%" cy="50%" outerRadius={80}>
-              <PolarGrid stroke="rgba(255,255,255,0.06)" />
-              <PolarAngleAxis dataKey="metric" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} />
-              <Radar name="Portfolio" dataKey="value" stroke="var(--color-accent)" fill="var(--color-accent)" fillOpacity={0.2} strokeWidth={2} />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
+        <Card className="flex flex-col">
+          <div className="mb-2">
+            <h3 className="font-bold">Portfolio Score</h3>
+            <p className="text-xs text-muted">Quality benchmark (0-100)</p>
+          </div>
+          <div className="flex-1 min-h-[220px]">
+            <ResponsiveContainer width="100%" height={220}>
+              <RadarChart data={scores} cx="50%" cy="50%" outerRadius={80}>
+                <PolarGrid stroke="rgba(255,255,255,0.06)" />
+                <PolarAngleAxis dataKey="metric" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} />
+                <Radar name="Portfolio" dataKey="value" stroke="var(--color-accent)" fill="var(--color-accent)" fillOpacity={0.2} strokeWidth={2} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
       </div>
 
       {/* Tax Report */}
-      <div className="card">
+      <Card>
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3>Tax Summary (Auto-computed FIFO)</h3>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 4 }}>
+            <h3 className="font-bold flex items-center gap-2">
+              <Target size={16} className="text-accent" /> Tax Summary (Auto-computed FIFO)
+            </h3>
+            <p className="text-xs text-muted mt-1">
               Based on your recorded transactions. Verify with your CA before filing ITR.
             </p>
           </div>
         </div>
-        <div className="grid grid-3 mb-6">
+        
+        <div className="grid grid-3 gap-5 mb-6">
           {[
-            { label: 'Short-Term Capital Gain (STCG)', val: stcg, note: 'Taxed @ 20% (post Jul 2024)', color: 'var(--color-warning)' },
-            { label: 'Long-Term Capital Gain (LTCG)',  val: ltcg, note: '12.5% above ₹1.25L exemption', color: 'var(--color-info)' },
-            { label: 'Dividend Income',                val: totalDiv, note: `Across ${divTxns.length} dividend entries`, color: 'var(--color-profit)' },
+            { label: 'Short-Term Capital Gain (STCG)', val: stcg, note: 'Taxed @ 20% (post Jul 2024)', color: 'text-warning' },
+            { label: 'Long-Term Capital Gain (LTCG)',  val: ltcg, note: '12.5% above ₹1.25L exemption', color: 'text-info' },
+            { label: 'Dividend Income',                val: totalDiv, note: `Across ${divTxns.length} dividend entries`, color: 'text-profit' },
           ].map(({ label, val, note, color }) => (
-            <div key={label} className="stat-card">
-              <div className="stat-label">{label}</div>
-              <div className="stat-value" style={{ fontSize: '1.25rem', color }}>{formatCurrency(val, true)}</div>
-              <div style={{ marginTop: 6, fontSize: '0.75rem', color: 'var(--text-muted)' }}>{note}</div>
+            <div key={label} className="bg-bg-primary rounded-md p-4 border border-border border-l-[3px]" style={{ borderLeftColor: 'currentColor' }}>
+              <div className="text-xs text-muted uppercase tracking-wider mb-2 font-semibold">{label}</div>
+              <div className={`text-2xl font-bold font-mono mb-1 ${color}`}>{formatCurrency(val, true)}</div>
+              <div className="text-[0.65rem] text-muted italic">{note}</div>
             </div>
           ))}
         </div>
-        <div style={{ background: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: '14px 20px', border: '1px solid var(--color-border)' }}>
-          <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: 10, color: 'var(--text-primary)' }}>Transaction Charges</div>
-          <div className="grid grid-3">
-            {[ { label: 'STT Paid', val: totalStt }, { label: 'Total Charges', val: totalCharges }, { label: 'Transactions', val: transactions.length } ].map(({ label, val }) => (
-              <div key={label} className="flex items-center justify-between" style={{ padding: '4px 0' }}>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{label}:</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--text-primary)', fontWeight: 600 }}>
+        
+        <div className="bg-bg-primary rounded-lg p-4 border border-border">
+          <div className="font-semibold text-sm mb-3 text-primary">Transaction Charges Breakdown</div>
+          <div className="grid grid-3 gap-6">
+            {[ 
+              { label: 'STT Paid', val: totalStt }, 
+              { label: 'Total Charges', val: totalCharges }, 
+              { label: 'Transactions', val: transactions.length } 
+            ].map(({ label, val }) => (
+              <div key={label} className="flex flex-col">
+                <span className="text-xs text-muted uppercase tracking-wider mb-1">{label}</span>
+                <span className="font-mono text-primary font-bold">
                   {typeof val === 'number' && label !== 'Transactions' ? formatCurrency(val) : val}
                 </span>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }

@@ -21,8 +21,8 @@ import Watchlist from '@/pages/Watchlist'
 
 function NotFound() {
   return (
-    <div className="app-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', flexDirection: 'column', gap: 16 }}>
-      <div style={{ fontSize: '4rem', fontWeight: 800, color: 'var(--color-border-light)' }}>404</div>
+    <div className="app-content not-found-container">
+      <div className="not-found-code">404</div>
       <h2>Page not found</h2>
       <a href="/" className="btn btn-primary">← Back to Dashboard</a>
     </div>

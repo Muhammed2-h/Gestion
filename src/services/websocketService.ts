@@ -10,7 +10,7 @@ export class WebSocketService {
       return;
     }
 
-    this.ws = new WebSocket('ws://localhost:3001');
+    this.ws = new WebSocket(`ws://${window.location.hostname}:3001`);
 
     this.ws.onopen = () => {
       console.log('WS Connected to Backend');

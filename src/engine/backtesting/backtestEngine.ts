@@ -141,7 +141,7 @@ export class BacktestEngine {
     });
   }
 
-  private closePosition(position: Position, price: number, time: number) { // eslint-disable-line
+  private closePosition(position: Position, price: number, time: number) {  
     const executionPrice = position.side === 'sell' ? price * (1 + this._config.slippagePct / 100) : price * (1 - this._config.slippagePct / 100);
     const commission = (executionPrice * position.quantity) * (this._config.commissionPct / 100);
 

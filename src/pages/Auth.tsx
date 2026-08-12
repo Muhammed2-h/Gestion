@@ -45,39 +45,37 @@ export default function Auth() {
   }
 
   return (
-    <div style={containerStyle}>
-      {/* Dynamic Background Elements */}
-      <div style={glow1Style} />
-      <div style={glow2Style} />
-      <div style={glow3Style} />
-
-      <div style={gridStyle}>
+    <div className="w-screen min-h-screen bg-[#0a0a0b] text-primary flex justify-center items-center py-5 relative overflow-x-hidden overflow-y-auto">
+      <div className="relative z-10 w-full max-w-6xl min-h-[600px] p-10 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+        
         {/* Left Side: Branding / Landing Info */}
-        <div style={brandSectionStyle} className={mounted ? 'animate-fade-in' : ''}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-            <div style={logoSquareStyle}>G</div>
-            <h1 style={{ margin: 0, fontSize: '2.5rem', fontWeight: 800, background: 'linear-gradient(135deg, #fff, #9ca3af)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <div className={`flex flex-col justify-center ${mounted ? 'animate-fade-in' : ''}`}>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-11 h-11 rounded-xl bg-accent flex items-center justify-center text-[1.4rem] font-black text-white">G</div>
+            <h1 className="m-0 text-[2.5rem] font-black tracking-tight text-white">
               Gestion
             </h1>
           </div>
-          <h2 style={{ fontSize: '1.8rem', fontWeight: 700, margin: '0 0 16px 0', lineHeight: 1.2 }}>
+          <h2 className="text-[1.8rem] font-bold m-0 mb-4 leading-tight text-primary">
             Master your portfolio with next-gen intelligence.
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#9ca3af', lineHeight: 1.6, maxWidth: 450, margin: '0 0 40px 0' }}>
+          <p className="text-[1.05rem] text-secondary leading-relaxed max-w-[450px] m-0 mb-10">
             Unleash institutional-grade analytics, smart algorithmic trading, and real-time market insights tailored for individual investors.
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div className="flex flex-col gap-5">
             {[
-              { icon: <TrendingUp size={20} color="#60A5FA" />, title: 'Real-time Analytics', desc: 'Live pricing, CAGR, and XIRR tracking.' },
-              { icon: <Globe size={20} color="#34D399" />, title: 'Deep Market Sectors', desc: 'Instant exposure analysis across 200+ equities.' },
-              { icon: <Shield size={20} color="#FBBF24" />, title: 'Algorithmic Trading', desc: 'Configure powerful risk-managed strategies.' },
+              { icon: <TrendingUp size={20} className="text-accent" />, title: 'Real-time Analytics', desc: 'Live pricing, CAGR, and XIRR tracking.' },
+              { icon: <Globe size={20} className="text-info" />, title: 'Deep Market Sectors', desc: 'Instant exposure analysis across 200+ equities.' },
+              { icon: <Shield size={20} className="text-warning" />, title: 'Algorithmic Trading', desc: 'Configure powerful risk-managed strategies.' },
             ].map((f, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
-                <div style={featureIconWrapper}>{f.icon}</div>
+              <div key={i} className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-bg-card border border-border flex items-center justify-center flex-shrink-0">
+                  {f.icon}
+                </div>
                 <div>
-                  <h4 style={{ margin: '0 0 4px 0', fontSize: '0.95rem', fontWeight: 600, color: '#f3f4f6' }}>{f.title}</h4>
-                  <p style={{ margin: 0, fontSize: '0.85rem', color: '#9ca3af' }}>{f.desc}</p>
+                  <h4 className="m-0 mb-1 text-[0.95rem] font-bold text-primary">{f.title}</h4>
+                  <p className="m-0 text-[0.85rem] text-secondary">{f.desc}</p>
                 </div>
               </div>
             ))}
@@ -85,84 +83,81 @@ export default function Auth() {
         </div>
 
         {/* Right Side: Auth Form */}
-        <div style={authSectionStyle}>
-          <div style={glassCardStyle} className={mounted ? 'animate-fade-in' : ''}>
-            <div style={{ marginBottom: 32, textAlign: 'center' }}>
-              <h2 style={{ margin: '0 0 8px 0', fontSize: '1.6rem', fontWeight: 700, color: '#f9fafb' }}>
+        <div className="flex justify-center items-center w-full">
+          <div className={`w-full max-w-[420px] bg-bg-card border border-border rounded-2xl p-8 md:p-10 shadow-2xl ${mounted ? 'animate-fade-in' : ''}`}>
+            <div className="mb-8 text-center">
+              <h2 className="m-0 mb-2 text-[1.6rem] font-bold text-primary">
                 {isLogin ? 'Welcome back' : 'Create an account'}
               </h2>
-              <p style={{ margin: 0, fontSize: '0.85rem', color: '#9ca3af' }}>
+              <p className="m-0 text-[0.85rem] text-secondary">
                 {isLogin ? 'Enter your credentials to access your terminal.' : 'Start dominating the markets today.'}
               </p>
             </div>
 
             {error && (
-              <div style={{ marginBottom: 20, padding: '10px 14px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
-                <Shield size={16} color="#ef4444" />
-                <span style={{ fontSize: '0.8rem', color: '#ef4444', fontWeight: 500 }}>{error}</span>
+              <div className="mb-5 p-3 px-3.5 bg-loss/10 border border-loss/20 rounded-xl flex items-center gap-2.5">
+                <Shield size={16} className="text-loss" />
+                <span className="text-[0.8rem] text-loss font-semibold">{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {!isLogin && (
-                <div className="form-group">
-                  <label className="form-label">Full Name</label>
-                  <div style={inputWrapperStyle}>
-                    <User size={16} color="#6b7280" style={inputIconStyle} />
+                <div className="form-group mb-0">
+                  <label className="form-label text-xs font-semibold mb-1.5">Full Name</label>
+                  <div className="relative flex items-center">
+                    <User size={16} className="text-muted absolute left-3.5" />
                     <input
                       type="text"
-                      className="form-input"
+                      className="form-input bg-bg-primary pl-10 h-11 border-border"
                       placeholder="John Doe"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      style={inputStyle}
                       required
                     />
                   </div>
                 </div>
               )}
 
-              <div className="form-group">
-                <label className="form-label">Email Address</label>
-                <div style={inputWrapperStyle}>
-                  <Mail size={16} color="#6b7280" style={inputIconStyle} />
+              <div className="form-group mb-0">
+                <label className="form-label text-xs font-semibold mb-1.5">Email Address</label>
+                <div className="relative flex items-center">
+                  <Mail size={16} className="text-muted absolute left-3.5" />
                   <input
                     type="email"
-                    className="form-input"
+                    className="form-input bg-bg-primary pl-10 h-11 border-border"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    style={inputStyle}
                     required
                   />
                 </div>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Password</label>
-                <div style={inputWrapperStyle}>
-                  <Lock size={16} color="#6b7280" style={inputIconStyle} />
+              <div className="form-group mb-0">
+                <label className="form-label text-xs font-semibold mb-1.5">Password</label>
+                <div className="relative flex items-center">
+                  <Lock size={16} className="text-muted absolute left-3.5" />
                   <input
                     type="password"
-                    className="form-input"
+                    className="form-input bg-bg-primary pl-10 h-11 border-border"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    style={inputStyle}
                     required
                   />
                 </div>
               </div>
 
               {isLogin && (
-                <div style={{ textAlign: 'right', marginTop: -6 }}>
-                  <button type="button" className="btn btn-ghost" style={{ fontSize: '0.75rem', color: '#60A5FA', padding: 0 }}>
+                <div className="text-right -mt-1.5">
+                  <button type="button" className="btn btn-ghost text-[0.75rem] text-accent p-0 hover:bg-transparent hover:underline">
                     Forgot password?
                   </button>
                 </div>
               )}
 
-              <button type="submit" className="btn btn-primary" style={submitBtnStyle} disabled={loading || attempts >= 5}>
+              <button type="submit" className="btn btn-primary h-12 mt-2 justify-center font-bold text-base shadow-lg" disabled={loading || attempts >= 5}>
                 {loading ? (
                   <><RefreshCw size={16} className="animate-spin" /> Verifying...</>
                 ) : (
@@ -171,13 +166,12 @@ export default function Auth() {
               </button>
             </form>
 
-            <div style={{ marginTop: 24, textAlign: 'center', fontSize: '0.85rem', color: '#9ca3af' }}>
+            <div className="mt-6 text-center text-[0.85rem] text-secondary">
               {isLogin ? "Don't have an account? " : 'Already have an account? '}
               <button
                 type="button"
-                className="btn btn-ghost"
+                className="btn btn-ghost text-accent p-0 font-bold border-b border-transparent hover:bg-transparent hover:underline"
                 onClick={() => setIsLogin(!isLogin)}
-                style={{ color: '#60A5FA', padding: 0, fontWeight: 600, borderBottom: '1px solid transparent' }}
               >
                 {isLogin ? 'Sign up' : 'Sign in'}
               </button>
@@ -187,150 +181,4 @@ export default function Auth() {
       </div>
     </div>
   )
-}
-
-// ─── Inline CSS & Premium Styling ─────────────────────────────────────────────
-
-const containerStyle: React.CSSProperties = {
-  position: 'relative',
-  width: '100vw',
-  minHeight: '100vh',
-  backgroundColor: '#0a0a0b',
-  color: '#e5e7eb',
-  overflowY: 'auto',
-  overflowX: 'hidden',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: '20px 0',
-}
-
-const gridStyle: React.CSSProperties = {
-  position: 'relative',
-  zIndex: 10,
-  width: '100%',
-  maxWidth: 1200,
-  minHeight: 600,
-  padding: '40px',
-  display: 'grid',
-  gridTemplateColumns: 'var(--auth-grid, repeat(auto-fit, minmax(350px, 1fr)))',
-  gap: 60,
-  alignItems: 'center',
-}
-
-const brandSectionStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-}
-
-const logoSquareStyle: React.CSSProperties = {
-  width: 44,
-  height: 44,
-  borderRadius: 12,
-  background: 'linear-gradient(135deg, #3B82F6, #10B981)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '1.4rem',
-  fontWeight: 800,
-  color: 'white',
-  boxShadow: '0 8px 24px rgba(59, 130, 246, 0.4)',
-}
-
-const featureIconWrapper: React.CSSProperties = {
-  width: 40,
-  height: 40,
-  borderRadius: '50%',
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.1)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  flexShrink: 0,
-}
-
-const authSectionStyle: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  width: '100%',
-}
-
-const glassCardStyle: React.CSSProperties = {
-  width: '100%',
-  maxWidth: 420,
-  background: 'rgba(17, 24, 39, 0.65)',
-  backdropFilter: 'blur(20px)',
-  WebkitBackdropFilter: 'blur(20px)',
-  border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: 24,
-  padding: '40px 32px',
-  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)',
-}
-
-const inputWrapperStyle: React.CSSProperties = {
-  position: 'relative',
-  display: 'flex',
-  alignItems: 'center',
-}
-
-const inputIconStyle: React.CSSProperties = {
-  position: 'absolute',
-  left: 14,
-}
-
-const inputStyle: React.CSSProperties = {
-  paddingLeft: 42,
-  height: 44,
-  background: 'rgba(0,0,0,0.3)',
-  border: '1px solid rgba(255,255,255,0.1)',
-  color: '#f9fafb',
-}
-
-const submitBtnStyle: React.CSSProperties = {
-  height: 46,
-  marginTop: 10,
-  background: 'linear-gradient(135deg, #3B82F6, #059669)',
-  border: 'none',
-  fontSize: '1rem',
-  fontWeight: 600,
-  textShadow: '0 1px 2px rgba(0,0,0,0.2)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  gap: 8,
-  boxShadow: '0 4px 14px rgba(59, 130, 246, 0.3)',
-}
-
-// Glowing orbs for abstract premium background
-const glow1Style: React.CSSProperties = {
-  position: 'absolute',
-  top: '-15%',
-  left: '-10%',
-  width: '50vw',
-  height: '50vw',
-  background: 'radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 60%)',
-  filter: 'blur(80px)',
-  zIndex: 1,
-}
-const glow2Style: React.CSSProperties = {
-  position: 'absolute',
-  bottom: '-15%',
-  right: '-10%',
-  width: '60vw',
-  height: '60vw',
-  background: 'radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 60%)',
-  filter: 'blur(100px)',
-  zIndex: 1,
-}
-const glow3Style: React.CSSProperties = {
-  position: 'absolute',
-  top: '20%',
-  right: '15%',
-  width: '30vw',
-  height: '30vw',
-  background: 'radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 60%)',
-  filter: 'blur(60px)',
-  zIndex: 1,
 }

@@ -1,10 +1,13 @@
-import { useState } from 'react'
-import { Plus, Trash2, Zap, CheckCircle, RefreshCw } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Plus, Trash2, Zap, CheckCircle, RefreshCw, AlertCircle } from 'lucide-react'
 import { usePortfolioStore } from '@/store'
 import { formatDate } from '@/lib/utils'
 import AddAccountModal from '@/components/AddAccountModal'
 import ConnectAPIModal from '@/components/ConnectAPIModal'
 import SyncModal from '@/components/SyncModal'
+import { PageHeader } from '@/components/ui/PageHeader'
+import { Card } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
 import type { Account } from '@/types'
 
 const BROKER_COLORS: Record<string, string> = {
@@ -19,7 +22,6 @@ export default function Accounts() {
   const [confirmDel, setConfirmDel]       = useState<string | null>(null)
   const [connectingAcc, setConnectingAcc] = useState<Account | null>(null)
   const [syncingAcc, setSyncingAcc]       = useState<Account | null>(() => {
-    // Check if we are returning from an OAuth flow
     const params = new URLSearchParams(window.location.search)
     if (params.has('code') || params.has('request_token')) {
       const id = sessionStorage.getItem('sync_oauth_account_id')
@@ -39,116 +41,159 @@ export default function Accounts() {
     return { positions: h.length, trades: t.length, invested, current, pnl: current - invested }
   }
 
+  // Grouping accounts
+  const groupedAccounts = useMemo(() => {
+    return {
+      connected: accounts.filter(a => a.is_api_synced),
+      manual: accounts.filter(a => !a.is_api_synced)
+    }
+  }, [accounts])
+
   if (accounts.length === 0) {
     return (
-      <div className="app-content animate-fade-in">
-        <div className="page-header">
-          <div><h1 className="page-title">Accounts</h1><p className="page-subtitle">No accounts added</p></div>
-        </div>
-        <div className="card" style={{ textAlign: 'center', padding: '60px 24px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: 16 }}>🏦</div>
-          <h3 style={{ marginBottom: 8 }}>Add Your First Account</h3>
-          <p style={{ color: 'var(--text-muted)', marginBottom: 24 }}>Connect a broker account to start tracking your portfolio.</p>
-          <button className="btn btn-primary btn-lg" onClick={() => setShowAdd(true)}><Plus size={18} /> Add Broker Account</button>
-        </div>
+      <div className="app-content animate-fade-in flex flex-col items-center justify-center">
+        <PageHeader title="Accounts" subtitle="No accounts added" />
+        <Card className="text-center p-10 max-w-2xl mx-auto mt-10 w-full">
+          <div className="text-5xl mb-4">🏦</div>
+          <h3 className="mb-2">Add Your First Account</h3>
+          <p className="text-muted mb-6">Connect a broker account to start tracking your portfolio.</p>
+          <button className="btn btn-primary btn-lg mx-auto" onClick={() => setShowAdd(true)}>
+            <Plus size={18} /> Add Broker Account
+          </button>
+        </Card>
         {showAdd && <AddAccountModal onClose={() => setShowAdd(false)} />}
       </div>
     )
   }
 
-  return (
-    <div className="app-content animate-fade-in">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Accounts</h1>
-          <p className="page-subtitle">{accounts.length} broker account{accounts.length !== 1 ? 's' : ''}</p>
-        </div>
-        <div className="page-actions">
-          <button className="btn btn-primary btn-sm" onClick={() => setShowAdd(true)}><Plus size={14} /> Add Account</button>
-        </div>
-      </div>
-
-      <div className="grid" style={{ gridTemplateColumns: 'var(--account-grid, repeat(auto-fill, minmax(340px, 1fr)))', gap: '20px' }}>
-        {accounts.map((acc) => {
-          const color = BROKER_COLORS[acc.broker_name] ?? 'var(--color-accent)'
-          const stats = getAccountStats(acc.id)
-          return (
-            <div key={acc.id} className="card" style={{ borderTop: `3px solid ${color}` }}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div style={{ width: 42, height: 42, borderRadius: 'var(--radius-lg)', background: `${color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', fontWeight: 800, color }}>
-                    {acc.broker_name[0]}
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{acc.name}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{acc.broker_name}</div>
-                  </div>
-                </div>
-                <span className={`badge ${acc.is_api_synced ? 'badge-profit' : 'badge-warning'}`}>
-                  {acc.is_api_synced ? <><CheckCircle size={10} /> API</> : 'Manual'}
-                </span>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'var(--modal-grid-2, 1fr 1fr)', gap: 10, marginBottom: 14 }}>
-                {[
-                  { label: 'Positions',    val: String(stats.positions) },
-                  { label: 'Transactions', val: String(stats.trades) },
-                  { label: 'Invested',     val: stats.invested > 0 ? `₹${(stats.invested/100000).toFixed(1)}L` : '—' },
-                  { label: 'P&L',          val: stats.pnl !== 0 ? `${stats.pnl >= 0 ? '+' : ''}₹${(stats.pnl/100000).toFixed(1)}L` : '—', color: stats.pnl >= 0 ? 'var(--color-profit)' : 'var(--color-loss)' },
-                ].map(({ label, val, color: vc }) => (
-                  <div key={label} style={{ background: 'var(--color-bg-primary)', borderRadius: 'var(--radius-md)', padding: '8px 12px' }}>
-                    <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{label}</div>
-                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: vc ?? 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{val}</div>
-                  </div>
-                ))}
-              </div>
-
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: 14 }}>
-                Added {formatDate(acc.created_at)} · Type: <span className="chip" style={{ fontSize: '0.65rem' }}>{acc.type.toUpperCase()}</span>
-              </div>
-
-              <div className="flex gap-2">
-                {acc.api_key && (
-                  <button
-                    className="btn btn-sm flex-1"
-                    style={{ background: '#6366F1', borderColor: '#6366F1', color: 'white' }}
-                    onClick={() => setSyncingAcc(acc)}
-                  >
-                    <RefreshCw size={12} /> Sync Now
-                  </button>
-                )}
-                {acc.is_api_synced && acc.api_status === 'connected'
-                  ? <button className="btn btn-outline btn-sm" style={{ borderColor: 'var(--color-profit)', color: 'var(--color-profit)' }} onClick={() => setConnectingAcc(acc)}>
-                      <Zap size={12} /> Re-key
-                    </button>
-                  : <button className="btn btn-outline btn-sm" onClick={() => setConnectingAcc(acc)}>
-                      <Zap size={12} /> Connect API
-                    </button>}
-                {confirmDel === acc.id ? (
-                  <div className="flex gap-1">
-                    <button className="btn btn-danger btn-sm" onClick={() => { deleteAccount(acc.id); setConfirmDel(null) }}>Confirm Delete</button>
-                    <button className="btn btn-ghost btn-sm" onClick={() => setConfirmDel(null)}>Cancel</button>
-                  </div>
-                ) : (
-                  <button className="btn btn-ghost btn-sm" style={{ color: 'var(--text-muted)' }} onClick={() => setConfirmDel(acc.id)}><Trash2 size={13} /></button>
-                )}
-              </div>
+  const renderAccountCard = (acc: Account) => {
+    const color = BROKER_COLORS[acc.broker_name] ?? 'var(--color-accent)'
+    const stats = getAccountStats(acc.id)
+    
+    return (
+      <Card key={acc.id} className="border-t-[3px] flex flex-col" style={{ borderTopColor: color }}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div 
+              className="w-10 h-10 rounded-md flex items-center justify-center font-bold text-lg" 
+              style={{ background: `${color}22`, color }}
+            >
+              {acc.broker_name[0]}
             </div>
-          )
-        })}
+            <div>
+              <div className="font-bold text-primary">{acc.name}</div>
+              <div className="text-xs text-muted">{acc.broker_name}</div>
+            </div>
+          </div>
+          <Badge variant={acc.is_api_synced ? (acc.api_status === 'error' ? 'loss' : 'profit') : 'warning'} className="text-[0.65rem] font-bold py-1 px-2 flex items-center gap-1">
+            {acc.is_api_synced 
+              ? (acc.api_status === 'error' ? <><AlertCircle size={10} /> Sync Error</> : <><CheckCircle size={10} /> API Synced</>) 
+              : 'Manual Entry'}
+          </Badge>
+        </div>
 
-        {/* Add account CTA */}
-        <div className="card" style={{ border: '1px dashed var(--color-border-light)', background: 'transparent', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, minHeight: 220, cursor: 'pointer', transition: 'all 0.25s' }}
-          onClick={() => setShowAdd(true)}
-          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-accent)'; e.currentTarget.style.background = 'var(--color-accent-dim)' }}
-          onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border-light)'; e.currentTarget.style.background = 'transparent' }}>
-          <Plus size={28} color="var(--color-accent)" />
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>Add Account</div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Connect broker or track manually</div>
+        <div className="grid grid-2 gap-2.5 mb-4">
+          {[
+            { label: 'Positions',    val: String(stats.positions) },
+            { label: 'Transactions', val: String(stats.trades) },
+            { label: 'Invested',     val: stats.invested > 0 ? `₹${(stats.invested/100000).toFixed(1)}L` : '—' },
+            { label: 'P&L',          val: stats.pnl !== 0 ? `${stats.pnl >= 0 ? '+' : ''}₹${(stats.pnl/100000).toFixed(1)}L` : '—', color: stats.pnl >= 0 ? 'text-profit' : 'text-loss' },
+          ].map(({ label, val, color: vc }) => (
+            <div key={label} className="bg-bg-primary rounded-md p-2">
+              <div className="text-[0.65rem] text-muted uppercase tracking-wider mb-0.5">{label}</div>
+              <div className={`font-bold text-sm font-mono ${vc ?? 'text-primary'}`}>{val}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-[0.7rem] text-muted mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            Added {formatDate(acc.created_at)}
+            <Badge variant="default" className="text-[0.6rem] ml-1 px-1.5 py-0 uppercase">{acc.type}</Badge>
+          </div>
+          {acc.last_synced && (
+            <span className="italic">Synced {new Date(acc.last_synced).toLocaleDateString()}</span>
+          )}
+        </div>
+
+        <div className="flex gap-2 mt-auto">
+          {acc.api_key && (
+            <button
+              className="btn btn-sm flex-1"
+              style={{ background: '#6366F1', borderColor: '#6366F1', color: 'white' }}
+              onClick={() => setSyncingAcc(acc)}
+            >
+              <RefreshCw size={12} /> Sync Now
+            </button>
+          )}
+          {acc.is_api_synced && acc.api_status === 'connected'
+            ? <button className="btn btn-outline btn-sm" style={{ borderColor: 'var(--color-profit)', color: 'var(--color-profit)' }} onClick={() => setConnectingAcc(acc)}>
+                <Zap size={12} /> Re-key
+              </button>
+            : <button className="btn btn-outline btn-sm flex-1" onClick={() => setConnectingAcc(acc)}>
+                <Zap size={12} /> Connect API
+              </button>}
+          {confirmDel === acc.id ? (
+            <div className="flex items-center gap-1 bg-loss-bg p-1 rounded-md">
+              <button className="btn btn-danger btn-sm text-xs py-1 px-2" onClick={() => { deleteAccount(acc.id); setConfirmDel(null) }}>Delete</button>
+              <button className="btn btn-ghost btn-sm text-xs py-1 px-2 text-primary" onClick={() => setConfirmDel(null)}>Cancel</button>
+            </div>
+          ) : (
+            <button className="btn btn-ghost btn-sm text-muted hover:text-loss hover:bg-loss-bg transition-fast" onClick={() => setConfirmDel(acc.id)}>
+              <Trash2 size={14} />
+            </button>
+          )}
+        </div>
+      </Card>
+    )
+  }
+
+  const renderAddCard = () => (
+    <Card 
+      className="border-dashed border-border-light bg-transparent flex flex-col items-center justify-center gap-3 min-h-[220px] cursor-pointer hover:border-accent hover:bg-accent-dim transition-fast"
+      onClick={() => setShowAdd(true)}
+    >
+      <Plus size={28} className="text-accent" />
+      <div className="text-center">
+        <div className="font-semibold text-primary mb-1">Add Account</div>
+        <div className="text-sm text-muted">Connect broker or track manually</div>
+      </div>
+    </Card>
+  )
+
+  return (
+    <div className="app-content animate-fade-in flex flex-col h-full overflow-auto">
+      <PageHeader 
+        title="Broker Accounts" 
+        subtitle={`${accounts.length} linked account${accounts.length !== 1 ? 's' : ''}`}
+        actions={
+          <button className="btn btn-primary btn-sm" onClick={() => setShowAdd(true)}><Plus size={14} /> Add Account</button>
+        }
+      />
+
+      {groupedAccounts.connected.length > 0 && (
+        <div className="mb-8">
+          <h3 className="font-bold mb-4 flex items-center gap-2">
+            <Zap size={16} className="text-accent" /> API Connected Brokers
+          </h3>
+          <div className="grid grid-3 gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
+            {groupedAccounts.connected.map(renderAccountCard)}
+            {groupedAccounts.manual.length === 0 && renderAddCard()}
           </div>
         </div>
-      </div>
+      )}
+
+      {groupedAccounts.manual.length > 0 && (
+        <div className="mb-8">
+          <h3 className="font-bold mb-4 flex items-center gap-2">
+            <RefreshCw size={16} className="text-muted" /> Manual Accounts
+          </h3>
+          <div className="grid grid-3 gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
+            {groupedAccounts.manual.map(renderAccountCard)}
+            {renderAddCard()}
+          </div>
+        </div>
+      )}
 
       {showAdd && <AddAccountModal onClose={() => setShowAdd(false)} />}
       {connectingAcc && <ConnectAPIModal account={connectingAcc} onClose={() => setConnectingAcc(null)} />}

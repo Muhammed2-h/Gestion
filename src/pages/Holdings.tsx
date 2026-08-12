@@ -1,52 +1,81 @@
-import React, { useState } from 'react'
-import { TrendingUp, TrendingDown, Search, RefreshCw, PlusCircle, Upload } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Search, RefreshCw, PlusCircle, Upload } from 'lucide-react'
 import { usePortfolioStore } from '@/store'
 import { formatCurrency, formatPct } from '@/lib/utils'
 import UpdatePriceModal from '@/components/UpdatePriceModal'
 import AddTransactionModal from '@/components/AddTransactionModal'
 import ImportCSVModal from '@/components/ImportCSVModal'
+import { PageHeader } from '@/components/ui/PageHeader'
+import { Card } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
 import type { Holding } from '@/types'
 
 export default function Holdings() {
   const { holdings, summary } = usePortfolioStore()
   const [search, setSearch]       = useState('')
-  const [sortBy, setSortBy]       = useState<keyof Holding>('current_value')
+  const [sortBy, setSortBy]       = useState<keyof Holding | 'weight'>('current_value')
   const [sortDir, setSortDir]     = useState<'asc' | 'desc'>('desc')
   const [selectedHolding, setSelectedHolding] = useState<Holding | null>(null)
   const [modal, setModal] = useState<'transaction' | 'csv' | null>(null)
 
-  const filtered = holdings
-    .filter((h) => h.symbol.toLowerCase().includes(search.toLowerCase()) || (h.sector ?? '').toLowerCase().includes(search.toLowerCase()))
-    .sort((a, b) => {
-      const av = (a[sortBy] as number) ?? 0
-      const bv = (b[sortBy] as number) ?? 0
-      return sortDir === 'desc' ? bv - av : av - bv
-    })
+  const maxPnl = useMemo(() => {
+    if (holdings.length === 0) return 1
+    return Math.max(...holdings.map(h => Math.abs(h.unrealized_pnl || 0)))
+  }, [holdings])
 
-  function toggleSort(col: keyof Holding) {
+  const filtered = useMemo(() => {
+    return holdings
+      .filter((h) => h.symbol.toLowerCase().includes(search.toLowerCase()) || (h.sector ?? '').toLowerCase().includes(search.toLowerCase()))
+      .map(h => ({
+        ...h,
+        weight: summary.current_value > 0 ? (h.current_value / summary.current_value) * 100 : 0
+      }))
+      .sort((a, b) => {
+        const av = (a[sortBy as keyof typeof a] as number) ?? 0
+        const bv = (b[sortBy as keyof typeof b] as number) ?? 0
+        return sortDir === 'desc' ? bv - av : av - bv
+      })
+  }, [holdings, search, sortBy, sortDir, summary.current_value])
+
+  function toggleSort(col: keyof Holding | 'weight') {
     if (sortBy === col) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
     else { setSortBy(col); setSortDir('desc') }
   }
 
-  function renderSortIcon(col: keyof Holding) {
-    if (sortBy !== col) return null;
-    return <span style={{ fontSize: '0.6rem', color: 'var(--color-accent)' }}>{sortDir === 'desc' ? '▼' : '▲'}</span>
+  function renderSortIcon(col: keyof Holding | 'weight') {
+    if (sortBy !== col) return <span className="opacity-0 group-hover:opacity-50 ml-1">↕</span>;
+    return <span className="text-accent ml-1">{sortDir === 'desc' ? '↓' : '↑'}</span>
   }
+
+  const Th = ({ label, sortKey, align = 'left' }: { label: string, sortKey?: keyof Holding | 'weight', align?: 'left'|'right'|'center' }) => (
+    <th 
+      className={`group cursor-pointer select-none bg-bg-card z-10 sticky top-0 ${align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'}`}
+      onClick={() => sortKey && toggleSort(sortKey)}
+    >
+      <div className={`flex items-center ${align === 'right' ? 'justify-end' : align === 'center' ? 'justify-center' : 'justify-start'}`}>
+        {label}
+        {sortKey && renderSortIcon(sortKey)}
+      </div>
+    </th>
+  )
 
   if (holdings.length === 0) {
     return (
-      <div className="app-content animate-fade-in">
-        <div className="page-header">
-          <div><h1 className="page-title">Holdings</h1><p className="page-subtitle">No positions yet</p></div>
-          <div className="page-actions">
-            <button className="btn btn-outline btn-sm" onClick={() => setModal('csv')}><Upload size={14} /> Import CSV</button>
-            <button className="btn btn-primary btn-sm" onClick={() => setModal('transaction')}><PlusCircle size={14} /> Add Transaction</button>
-          </div>
-        </div>
-        <div className="card" style={{ textAlign: 'center', padding: '60px 24px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: 16 }}>💼</div>
-          <h3 style={{ marginBottom: 8 }}>No Holdings Yet</h3>
-          <p style={{ color: 'var(--text-muted)', marginBottom: 24 }}>Add transactions or import a CSV to see your holdings here.</p>
+      <div className="app-content animate-fade-in flex flex-col items-center justify-center">
+        <PageHeader 
+          title="Holdings" 
+          subtitle="No positions yet" 
+          actions={
+            <>
+              <button className="btn btn-outline btn-sm" onClick={() => setModal('csv')}><Upload size={14} /> Import CSV</button>
+              <button className="btn btn-primary btn-sm" onClick={() => setModal('transaction')}><PlusCircle size={14} /> Add Transaction</button>
+            </>
+          } 
+        />
+        <div className="card text-center p-10 max-w-2xl mx-auto mt-10 w-full">
+          <div className="text-5xl mb-4">💼</div>
+          <h3 className="mb-2">No Holdings Yet</h3>
+          <p className="text-muted mb-6">Add transactions or import a CSV to see your holdings here.</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <button className="btn btn-primary" onClick={() => setModal('transaction')}><PlusCircle size={15} /> Add Transaction</button>
             <button className="btn btn-outline" onClick={() => setModal('csv')}><Upload size={15} /> Import CSV</button>
@@ -59,100 +88,130 @@ export default function Holdings() {
   }
 
   return (
-    <div className="app-content animate-fade-in">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Holdings</h1>
-          <p className="page-subtitle">{filtered.length} position{filtered.length !== 1 ? 's' : ''}</p>
-        </div>
-        <div className="page-actions">
-          <button className="btn btn-outline btn-sm" onClick={() => setModal('csv')}><Upload size={14} /> Import CSV</button>
-          <button className="btn btn-primary btn-sm" onClick={() => setModal('transaction')}><PlusCircle size={14} /> Add Transaction</button>
-        </div>
-      </div>
+    <div className="app-content animate-fade-in flex flex-col h-full">
+      <PageHeader 
+        title="Holdings" 
+        subtitle={`${filtered.length} position${filtered.length !== 1 ? 's' : ''}`}
+        actions={
+          <>
+            <button className="btn btn-outline btn-sm" onClick={() => setModal('csv')}><Upload size={14} /> Import CSV</button>
+            <button className="btn btn-primary btn-sm" onClick={() => setModal('transaction')}><PlusCircle size={14} /> Add Transaction</button>
+          </>
+        }
+      />
 
       {/* Summary bar */}
-      <div className="card mb-6" style={{ padding: '14px 24px' }}>
-        <div className="flex items-center gap-6 flex-wrap">
-          {[
-            { label: 'Invested', val: formatCurrency(summary.total_invested, true), color: 'var(--text-primary)' },
-            { label: 'Current Value', val: formatCurrency(summary.current_value, true), color: 'var(--color-accent)' },
-            { label: 'Unrealised P&L', val: `${formatCurrency(summary.total_pnl, true)} (${formatPct(summary.total_pnl_pct)})`, color: summary.total_pnl >= 0 ? 'var(--color-profit)' : 'var(--color-loss)' },
-          ].map(({ label, val, color }, i) => (
-            <React.Fragment key={label}>
-              {i > 0 && <div style={{ width: 1, height: 36, background: 'var(--color-border)' }} />}
-              <div>
-                <div className="stat-label">{label}</div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color }}>{val}</div>
+      <Card className="mb-6 p-4">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-6">
+            <div>
+              <div className="text-xs text-muted mb-1 font-semibold uppercase tracking-wider">Invested</div>
+              <div className="font-mono font-bold text-primary">{formatCurrency(summary.total_invested, true)}</div>
+            </div>
+            <div className="w-px h-8 bg-border" />
+            <div>
+              <div className="text-xs text-muted mb-1 font-semibold uppercase tracking-wider">Current Value</div>
+              <div className="font-mono font-bold text-accent">{formatCurrency(summary.current_value, true)}</div>
+            </div>
+            <div className="w-px h-8 bg-border" />
+            <div>
+              <div className="text-xs text-muted mb-1 font-semibold uppercase tracking-wider">Unrealised P&L</div>
+              <div className={`font-mono font-bold ${summary.total_pnl >= 0 ? 'text-profit' : 'text-loss'}`}>
+                {formatCurrency(summary.total_pnl, true)} ({formatPct(summary.total_pnl_pct)})
               </div>
-            </React.Fragment>
-          ))}
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8, background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '6px 12px' }}>
-            <Search size={14} color="var(--text-muted)" />
-            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search…"
-              style={{ background: 'none', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: '0.82rem', width: 160 }} />
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2 bg-bg-secondary border border-border rounded-md px-3 py-1.5 flex-1 max-w-xs">
+            <Search size={14} className="text-muted" />
+            <input 
+              value={search} 
+              onChange={(e) => setSearch(e.target.value)} 
+              placeholder="Search symbols or sectors…"
+              className="bg-transparent border-none outline-none text-primary text-sm w-full placeholder:text-muted" 
+            />
           </div>
         </div>
-      </div>
+      </Card>
 
-      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-        <div className="table-scroll-wrapper">
-          <table className="data-table">
+      <Card className="p-0 flex-1 overflow-hidden flex flex-col min-h-0">
+        <div className="table-scroll-wrapper overflow-auto flex-1">
+          <table className="data-table w-full relative">
             <thead>
               <tr>
-                <th>Symbol</th>
-                <th>Sector</th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('total_quantity')}>Qty {renderSortIcon('total_quantity')}</th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('average_price')}>Avg Cost {renderSortIcon('average_price')}</th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('current_price')}>Market Price {renderSortIcon('current_price')}</th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('current_value')}>Value {renderSortIcon('current_value')}</th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('unrealized_pnl')}>P&L {renderSortIcon('unrealized_pnl')}</th>
-                <th style={{ cursor: 'pointer', textAlign: 'right' }} onClick={() => toggleSort('unrealized_pnl_pct')}>P&L % {renderSortIcon('unrealized_pnl_pct')}</th>
-                <th style={{ textAlign: 'center' }}>Actions</th>
+                <Th label="Symbol" sortKey="symbol" />
+                <Th label="Sector" sortKey="sector" />
+                <Th label="Qty" sortKey="total_quantity" align="right" />
+                <Th label="Avg Price" sortKey="average_price" align="right" />
+                <Th label="LTP" sortKey="current_price" align="right" />
+                <Th label="Invested" sortKey="invested_value" align="right" />
+                <Th label="Value" sortKey="current_value" align="right" />
+                <Th label="Weight %" sortKey="weight" align="right" />
+                <Th label="P&L" sortKey="unrealized_pnl" align="right" />
+                <th className="bg-bg-card z-10 sticky top-0 text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((h) => {
                 const isUp = h.unrealized_pnl >= 0
                 const priceNotSet = h.current_price === h.average_price
+                const pnlBarWidth = Math.min(100, Math.max(2, (Math.abs(h.unrealized_pnl) / maxPnl) * 100))
+                
                 return (
-                  <tr key={h.id}>
+                  <tr key={h.id} className="group hover:bg-bg-secondary transition-fast">
                     <td>
-                      <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{h.symbol}</div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{h.exchange} · {h.account_name}</div>
+                      <div className="font-bold text-primary">{h.symbol}</div>
+                      <div className="text-xs text-muted">{h.exchange} · {h.account_name}</div>
                     </td>
                     <td>
-                      {h.sector
-                        ? <span className="chip">{h.sector}</span>
-                        : <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>—</span>}
+                      {h.sector 
+                        ? <Badge variant="default" className="text-[0.65rem] py-0.5 px-2">{h.sector}</Badge>
+                        : <span className="text-xs text-muted italic">—</span>}
                     </td>
-                    <td className="col-num">{h.total_quantity}</td>
-                    <td className="col-num">{formatCurrency(h.average_price)}</td>
-                    <td className="col-num">
-                      {priceNotSet
-                        ? <span style={{ fontSize: '0.72rem', color: 'var(--color-warning)', fontStyle: 'italic' }}>Not set</span>
-                        : <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{formatCurrency(h.current_price)}</span>}
+                    <td className="text-right font-mono text-sm">{h.total_quantity}</td>
+                    <td className="text-right font-mono text-sm text-secondary">{formatCurrency(h.average_price)}</td>
+                    <td className="text-right font-mono text-sm">
+                      {priceNotSet 
+                        ? <span className="text-xs text-warning italic">Not set</span>
+                        : <span className="font-semibold text-primary">{formatCurrency(h.current_price)}</span>}
                     </td>
-                    <td className="col-num" style={{ fontWeight: 600, color: 'var(--color-accent)' }}>{formatCurrency(h.current_value, true)}</td>
-                    <td className="col-num" style={{ color: isUp ? 'var(--color-profit)' : 'var(--color-loss)', fontWeight: 600 }}>
-                      {priceNotSet ? '—' : formatCurrency(h.unrealized_pnl, true)}
+                    <td className="text-right font-mono text-sm text-secondary">{formatCurrency(h.invested_value, true)}</td>
+                    <td className="text-right font-mono text-sm font-semibold text-accent">{formatCurrency(h.current_value, true)}</td>
+                    <td className="text-right font-mono text-sm text-secondary">{h.weight.toFixed(1)}%</td>
+                    <td className="text-right min-w-[140px]">
+                      {priceNotSet ? (
+                        <span className="text-warning">—</span>
+                      ) : (
+                        <div className="flex flex-col items-end gap-1">
+                          <div className={`font-mono text-sm font-bold ${isUp ? 'text-profit' : 'text-loss'}`}>
+                            {formatCurrency(h.unrealized_pnl, true)} ({formatPct(h.unrealized_pnl_pct)})
+                          </div>
+                          <div className="w-full bg-bg-secondary h-1.5 rounded-full overflow-hidden flex justify-end">
+                            <div 
+                              className={`h-full rounded-full ${isUp ? 'bg-profit' : 'bg-loss'}`} 
+                              style={{ width: `${pnlBarWidth}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </td>
-                    <td className="col-num">
-                      {priceNotSet
-                        ? <span style={{ color: 'var(--color-warning)' }}>—</span>
-                        : <span className={`badge ${isUp ? 'badge-profit' : 'badge-loss'}`}>
-                            {isUp ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
-                            {formatPct(h.unrealized_pnl_pct)}
-                          </span>}
-                    </td>
-                    <td style={{ textAlign: 'center' }}>
-                      <button
-                        className="btn btn-outline btn-sm"
-                        style={{ fontSize: '0.72rem', padding: '4px 10px' }}
-                        onClick={() => setSelectedHolding(h)}
-                      >
-                        <RefreshCw size={11} /> Update Price
-                      </button>
+                    <td>
+                      <div className="flex items-center justify-center gap-2">
+                        <button
+                          className="p-1.5 text-muted hover:text-accent rounded-md hover:bg-accent-dim transition-fast"
+                          title="Update Price"
+                          onClick={() => setSelectedHolding(h)}
+                        >
+                          <RefreshCw size={14} />
+                        </button>
+                        <button
+                          className="p-1.5 text-muted hover:text-primary rounded-md hover:bg-bg-primary transition-fast"
+                          title="Add Trade"
+                          onClick={() => setModal('transaction')}
+                        >
+                          <PlusCircle size={14} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 )
@@ -160,7 +219,7 @@ export default function Holdings() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {selectedHolding && <UpdatePriceModal holding={selectedHolding} onClose={() => setSelectedHolding(null)} />}
       {modal === 'transaction' && <AddTransactionModal onClose={() => setModal(null)} />}

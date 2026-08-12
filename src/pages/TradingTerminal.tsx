@@ -8,7 +8,9 @@ import type { Candle } from '../engine/types';
 import OrderPanel from '../components/trading/OrderPanel';
 import PositionPanel from '../components/trading/PositionPanel';
 import TradeHistoryPanel from '../components/trading/TradeHistoryPanel';
-import { RefreshCw, TrendingUp, TrendingDown, RotateCcw, Info } from 'lucide-react';
+import { RefreshCw, TrendingUp, TrendingDown, RotateCcw, Info, Activity, LineChart, Settings, XCircle, CheckCircle2 } from 'lucide-react';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { Card } from '@/components/ui/Card';
 
 // ─── lightweight-charts v5 chart component ────────────────────────────────────
 
@@ -49,10 +51,10 @@ function CandlestickChart({
         width: containerRef.current.clientWidth,
         height: 360,
         layout: { background: { color: 'transparent' }, textColor: '#94a3b8' },
-        grid: { vertLines: { color: '#1a2235' }, horzLines: { color: '#1a2235' } },
+        grid: { vertLines: { color: 'rgba(255,255,255,0.03)' }, horzLines: { color: 'rgba(255,255,255,0.03)' } },
         crosshair: { mode: 1 },
-        rightPriceScale: { borderColor: '#1e2a3d' },
-        timeScale: { borderColor: '#1e2a3d', timeVisible: true, secondsVisible: false },
+        rightPriceScale: { borderColor: 'rgba(255,255,255,0.1)' },
+        timeScale: { borderColor: 'rgba(255,255,255,0.1)', timeVisible: true, secondsVisible: false },
       });
 
       const series = chart.addSeries(CandlestickSeries, {
@@ -87,7 +89,7 @@ function CandlestickChart({
     }).catch(console.error);
 
     return () => cleanup();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [candles]);
 
   // Update live price as a real-time bar when livePrice changes
@@ -106,7 +108,7 @@ function CandlestickChart({
   }, [livePrice, candles]);
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: 360 }} />
+    <div ref={containerRef} className="w-full h-[360px]" />
   );
 }
 
@@ -146,15 +148,15 @@ function PriceTicker({ symbol }: { symbol: string }) {
   }, [quote, symbol, updatePositionPrices, processPendingOrders]);
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-muted)', fontSize: '0.82rem' }}>
-      <div className="animate-spin" style={{ width: 14, height: 14, border: '2px solid var(--color-accent)', borderTopColor: 'transparent', borderRadius: '50%' }} />
+    <div className="flex items-center gap-2 text-[0.82rem] text-muted">
+      <div className="animate-spin w-3.5 h-3.5 border-2 border-accent border-t-transparent rounded-full" />
       Fetching price…
     </div>
   );
 
   if (error || !quote) return (
-    <div style={{ fontSize: '0.78rem', color: 'var(--color-warning)' }}>
-      <Info size={13} style={{ marginRight: 4, verticalAlign: 'middle' }} />
+    <div className="text-[0.78rem] text-warning flex items-center gap-1.5">
+      <Info size={13} />
       {error ?? 'No price data'}
     </div>
   );
@@ -162,21 +164,13 @@ function PriceTicker({ symbol }: { symbol: string }) {
   const isUp = quote.dayChange >= 0;
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+    <div className="flex items-center gap-4 flex-wrap">
       {/* LTP */}
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-        <span style={{
-          fontSize: '1.8rem', fontWeight: 800,
-          fontFamily: 'var(--font-mono)', color: 'var(--text-primary)',
-          letterSpacing: '-0.03em',
-        }}>
+      <div className="flex items-baseline gap-2">
+        <span className="text-3xl font-black font-mono text-primary tracking-tight">
           ${quote.ltp.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </span>
-        <span style={{
-          fontSize: '0.9rem', fontWeight: 700,
-          color: isUp ? 'var(--color-profit)' : 'var(--color-loss)',
-          display: 'flex', alignItems: 'center', gap: 3,
-        }}>
+        <span className={`text-sm font-bold flex items-center gap-1 ${isUp ? 'text-profit' : 'text-loss'}`}>
           {isUp ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
           {isUp ? '+' : ''}{quote.dayChange.toFixed(2)}
           ({isUp ? '+' : ''}{quote.dayChangePct.toFixed(2)}%)
@@ -184,7 +178,7 @@ function PriceTicker({ symbol }: { symbol: string }) {
       </div>
 
       {/* OHLV mini */}
-      <div style={{ display: 'flex', gap: 10, fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+      <div className="flex gap-3 text-[0.72rem] text-muted ml-2">
         {[
           ['O', quote.open],
           ['H', quote.high],
@@ -192,16 +186,16 @@ function PriceTicker({ symbol }: { symbol: string }) {
           ['P', quote.prevClose],
         ].map(([label, val]) => (
           <span key={label as string}>
-            <span style={{ opacity: 0.6 }}>{label} </span>
-            <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+            <span className="opacity-60 uppercase">{label} </span>
+            <span className="font-mono text-secondary">
               {(val as number).toFixed(2)}
             </span>
           </span>
         ))}
         {quote.volume > 0 && (
           <span>
-            <span style={{ opacity: 0.6 }}>Vol </span>
-            <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+            <span className="opacity-60 uppercase">Vol </span>
+            <span className="font-mono text-secondary">
               {quote.volume > 1e7 ? `${(quote.volume / 1e7).toFixed(1)}Cr` : `${(quote.volume / 1e5).toFixed(1)}L`}
             </span>
           </span>
@@ -210,11 +204,10 @@ function PriceTicker({ symbol }: { symbol: string }) {
 
       <button
         onClick={refresh}
-        className="btn btn-ghost btn-sm"
+        className="btn btn-ghost p-1.5 rounded-md hover:bg-bg-secondary text-muted hover:text-primary transition-fast ml-auto"
         title="Refresh price"
-        style={{ marginLeft: 'auto' }}
       >
-        <RefreshCw size={13} />
+        <RefreshCw size={14} />
       </button>
     </div>
   );
@@ -303,176 +296,179 @@ export default function TradingTerminal() {
   const totalReturn = ((equity - 100_000) / 100_000) * 100;
 
   return (
-    <div className="app-content animate-fade-in">
+    <div className="app-content animate-fade-in flex flex-col h-full overflow-hidden pb-4">
 
       {/* ── Toast ────────────────────────────────────────────────── */}
       {toast && (
-        <div style={{
-          position: 'fixed', top: 80, right: 20, zIndex: 9999,
-          background: toast.ok ? 'var(--color-profit-bg)' : 'var(--color-loss-bg)',
-          border: `1px solid ${toast.ok ? 'var(--color-profit)' : 'var(--color-loss)'}`,
-          borderRadius: 'var(--radius-lg)',
-          padding: '12px 18px',
-          color: toast.ok ? 'var(--color-profit)' : 'var(--color-loss)',
-          fontWeight: 600, fontSize: '0.85rem',
-          boxShadow: 'var(--shadow-lg)',
-          maxWidth: 340,
-          animation: 'fadeIn 0.2s ease',
-        }}>
-          {toast.ok ? '✓' : '✗'} {toast.msg}
+        <div 
+          className={`fixed top-20 right-5 z-50 p-3 px-4 rounded-lg font-bold text-sm shadow-xl flex items-center gap-2 animate-slide-left border ${
+            toast.ok ? 'bg-profit/10 border-profit text-profit' : 'bg-loss/10 border-loss text-loss'
+          }`}
+        >
+          {toast.ok ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+          {toast.msg}
         </div>
       )}
 
       {/* ── Header ───────────────────────────────────────────────── */}
-      <div className="page-header terminal-header">
-        <div>
-          <h1 className="page-title">Trading Terminal</h1>
-          <div className="terminal-mode-btns" style={{ marginTop: 8 }}>
-            <button onClick={() => setMode('LIVE')} className={`btn btn-sm ${mode === 'LIVE' ? 'btn-primary' : 'btn-outline'}`}>
-              📊 Live Paper
-            </button>
-            <button onClick={() => setMode('BACKTEST')} className={`btn btn-sm ${mode === 'BACKTEST' ? 'btn-primary' : 'btn-outline'}`}>
-              🔬 Backtest
+      <PageHeader
+        title={
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-2">
+              <Activity size={24} className="text-accent" />
+              Trading Terminal
+            </span>
+            <div className="flex bg-bg-card border border-border p-1 rounded-lg">
+              <button 
+                onClick={() => setMode('LIVE')} 
+                className={`px-3 py-1.5 text-xs font-bold rounded-md transition-fast flex items-center gap-1.5 ${mode === 'LIVE' ? 'bg-accent text-white' : 'text-muted hover:text-primary'}`}
+              >
+                <LineChart size={14} /> Live Paper
+              </button>
+              <button 
+                onClick={() => setMode('BACKTEST')} 
+                className={`px-3 py-1.5 text-xs font-bold rounded-md transition-fast flex items-center gap-1.5 ${mode === 'BACKTEST' ? 'bg-accent text-white' : 'text-muted hover:text-primary'}`}
+              >
+                <Settings size={14} /> Backtest
+              </button>
+            </div>
+          </div>
+        }
+        actions={
+          <div className="flex items-center gap-2">
+            <form onSubmit={e => { e.preventDefault(); setSymbol(inputSym.trim().toUpperCase()); }} className="flex gap-2">
+              <input
+                type="text"
+                value={inputSym}
+                onChange={e => setInput(e.target.value.toUpperCase())}
+                className="form-input bg-bg-card border-border uppercase font-mono font-bold w-32"
+                placeholder="e.g. RELIANCE.NS"
+              />
+              <button type="submit" className="btn btn-outline">Go</button>
+            </form>
+            {mode === 'BACKTEST' && (
+              <button className="btn btn-primary" onClick={runBacktest} disabled={isBacktesting || candles.length === 0}>
+                {isBacktesting ? '⏳ Running…' : '▶ Run Backtest'}
+              </button>
+            )}
+            <button 
+              className="btn btn-ghost px-2 text-muted hover:text-warning" 
+              onClick={() => { if (confirm('Reset paper account to $100,000?')) { resetAccount(); showToast('Account reset to $100,000', true); }}} 
+              title="Reset account"
+            >
+              <RotateCcw size={16} />
             </button>
           </div>
-        </div>
-
-        <div className="terminal-controls">
-          {/* Symbol search */}
-          <form onSubmit={e => { e.preventDefault(); setSymbol(inputSym.trim().toUpperCase()); }} style={{ display: 'flex', gap: 6 }}>
-            <input
-              type="text"
-              value={inputSym}
-              onChange={e => setInput(e.target.value.toUpperCase())}
-              className="form-input"
-              placeholder="e.g. RELIANCE.NS"
-              style={{ maxWidth: 160 }}
-            />
-            <button type="submit" className="btn btn-outline btn-sm">Go</button>
-          </form>
-          {mode === 'BACKTEST' && (
-            <button className="btn btn-primary btn-sm" onClick={runBacktest} disabled={isBacktesting || candles.length === 0}>
-              {isBacktesting ? '⏳ Running…' : '▶ Run Backtest'}
-            </button>
-          )}
-          <button className="btn btn-ghost btn-sm" onClick={() => { if (confirm('Reset paper account to $100,000?')) { resetAccount(); showToast('Account reset to $100,000', true); }}} title="Reset account">
-            <RotateCcw size={13} />
-          </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* ── Account Summary Bar ───────────────────────────────────── */}
-      <div style={{
-        display: 'flex', gap: 16, flexWrap: 'wrap',
-        marginBottom: 20, padding: '12px 16px',
-        background: 'var(--color-bg-card)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-lg)',
-        alignItems: 'center',
-      }}>
+      <Card className="flex flex-wrap items-center gap-6 mb-5 py-3 border-accent/20 bg-accent/5">
         {[
-          { label: 'Cash', value: `$${capital.toLocaleString(undefined, { maximumFractionDigits: 0 })}`, color: 'var(--text-primary)' },
-          { label: 'Equity', value: `$${equity.toLocaleString(undefined, { maximumFractionDigits: 0 })}`, color: 'var(--text-primary)' },
-          { label: 'Unrealized P&L', value: `${unrealPnl >= 0 ? '+' : ''}$${unrealPnl.toFixed(2)}`, color: unrealPnl >= 0 ? 'var(--color-profit)' : 'var(--color-loss)' },
-          { label: 'Total Return', value: `${totalReturn >= 0 ? '+' : ''}${totalReturn.toFixed(2)}%`, color: totalReturn >= 0 ? 'var(--color-profit)' : 'var(--color-loss)' },
-          { label: 'Positions', value: String(positions.length), color: 'var(--text-primary)' },
+          { label: 'Cash', value: `$${capital.toLocaleString(undefined, { maximumFractionDigits: 0 })}`, color: 'text-primary' },
+          { label: 'Equity', value: `$${equity.toLocaleString(undefined, { maximumFractionDigits: 0 })}`, color: 'text-primary' },
+          { label: 'Unrealized P&L', value: `${unrealPnl >= 0 ? '+' : ''}$${unrealPnl.toFixed(2)}`, color: unrealPnl >= 0 ? 'text-profit' : 'text-loss' },
+          { label: 'Total Return', value: `${totalReturn >= 0 ? '+' : ''}${totalReturn.toFixed(2)}%`, color: totalReturn >= 0 ? 'text-profit' : 'text-loss' },
+          { label: 'Positions', value: String(positions.length), color: 'text-primary' },
         ].map(({ label, value, color }) => (
-          <div key={label}>
-            <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>{label}</div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '0.9rem', color }}>{value}</div>
+          <div key={label} className="flex flex-col gap-1">
+            <div className="text-[0.65rem] text-muted font-bold tracking-wider uppercase">{label}</div>
+            <div className={`font-mono font-bold text-sm ${color}`}>{value}</div>
           </div>
         ))}
-        <div style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+        <div className="ml-auto text-[0.7rem] text-muted">
           Initial: $100,000
         </div>
-      </div>
+      </Card>
 
-      {/* ── Price Ticker ──────────────────────────────────────────── */}
-      <div className="card" style={{ marginBottom: 16, padding: '12px 16px' }}>
-        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          {symbol} · refreshes every 15s
-        </div>
-        <PriceTicker symbol={symbol} />
-      </div>
+      {/* ── Main 2-column Layout ───────────────────────────────────── */}
+      <div className="flex flex-col lg:flex-row gap-5 flex-1 min-h-0">
 
-      {/* ── Main 3-column Grid ───────────────────────────────────── */}
-      <div className="grid grid-3" style={{ alignItems: 'start', gap: 16 }}>
+        {/* Left Col: Chart + Ticker + Backtest Results */}
+        <div className="flex-1 flex flex-col gap-5 min-w-0 h-full overflow-y-auto custom-scrollbar pr-2 lg:pr-0">
+          
+          <Card className="flex flex-col p-4 border-l-4 border-l-info">
+            <div className="text-[0.65rem] text-muted mb-2 font-bold uppercase tracking-wider">
+              {symbol} · refreshes every 15s
+            </div>
+            <PriceTicker symbol={symbol} />
+          </Card>
 
-        {/* Left 2/3: Chart + Backtest Results */}
-        <div className="span-2-mobile" style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-            <div style={{ padding: '10px 14px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>{symbol} — Daily Candles</span>
+          <Card className="flex flex-col p-0 overflow-hidden flex-shrink-0">
+            <div className="flex items-center justify-between p-3 border-b border-border bg-bg-secondary/50">
+              <span className="font-bold text-sm">{symbol} — Daily Candles</span>
               {candles.length === 0 && (
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Loading chart…</span>
+                <span className="text-[0.7rem] text-muted">Loading chart…</span>
               )}
             </div>
-            {candles.length > 0
-              ? <CandlestickChart candles={candles} livePrice={livePrice} />
-              : <div style={{ height: 360, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>Loading chart data…</div>
-            }
-          </div>
+            <div className="bg-[#131722]">
+              {candles.length > 0
+                ? <CandlestickChart candles={candles} livePrice={livePrice} />
+                : <div className="h-[360px] flex items-center justify-center text-muted text-sm">Loading chart data…</div>
+              }
+            </div>
+          </Card>
 
           {/* Backtest Results */}
           {mode === 'BACKTEST' && result && (
-            <div className="card animate-fade-in">
-              <h3 style={{ marginBottom: 14 }}>📈 Backtest Results — EMA Crossover</h3>
-              <div className="grid grid-4 backtest-grid" style={{ gap: 10 }}>
+            <Card className="animate-fade-in flex-shrink-0 mb-4">
+              <h3 className="font-bold mb-4 text-primary">📈 Backtest Results — EMA Crossover</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
-                  { label: 'Net Profit', value: `$${result.netProfit.toFixed(2)}`, color: result.netProfit >= 0 ? 'var(--color-profit)' : 'var(--color-loss)' },
-                  { label: 'Win Rate',   value: `${(result.winRate * 100).toFixed(1)}%`, color: 'var(--text-primary)' },
-                  { label: 'Max DD',     value: `${(result.maxDrawdown * 100).toFixed(2)}%`, color: 'var(--color-loss)' },
-                  { label: 'Sharpe',     value: result.sharpeRatio.toFixed(2), color: 'var(--text-primary)' },
-                  { label: 'Trades',     value: String(result.trades.length), color: 'var(--text-primary)' },
-                  { label: 'Profit Factor', value: result.profitFactor.toFixed(2), color: 'var(--text-primary)' },
-                  { label: 'CAGR',       value: `${(result.cagr * 100).toFixed(2)}%`, color: 'var(--color-profit)' },
-                  { label: 'Final Eq',   value: `$${result.finalEquity.toFixed(0)}`, color: 'var(--text-primary)' },
+                  { label: 'Net Profit', value: `$${result.netProfit.toFixed(2)}`, color: result.netProfit >= 0 ? 'text-profit' : 'text-loss' },
+                  { label: 'Win Rate',   value: `${(result.winRate * 100).toFixed(1)}%`, color: 'text-primary' },
+                  { label: 'Max DD',     value: `${(result.maxDrawdown * 100).toFixed(2)}%`, color: 'text-loss' },
+                  { label: 'Sharpe',     value: result.sharpeRatio.toFixed(2), color: 'text-primary' },
+                  { label: 'Trades',     value: String(result.trades.length), color: 'text-primary' },
+                  { label: 'Profit Factor', value: result.profitFactor.toFixed(2), color: 'text-primary' },
+                  { label: 'CAGR',       value: `${(result.cagr * 100).toFixed(2)}%`, color: 'text-profit' },
+                  { label: 'Final Eq',   value: `$${result.finalEquity.toFixed(0)}`, color: 'text-primary' },
                 ].map(({ label, value, color }) => (
-                  <div key={label} style={{ background: 'var(--color-bg-primary)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
-                    <div className="form-label">{label}</div>
-                    <div style={{ fontSize: '1rem', fontWeight: 700, color, fontFamily: 'var(--font-mono)', marginTop: 2 }}>{value}</div>
+                  <div key={label} className="bg-bg-primary rounded-md p-3 border border-border">
+                    <div className="text-[0.65rem] text-muted uppercase tracking-wider font-semibold mb-1">{label}</div>
+                    <div className={`text-base font-bold font-mono ${color}`}>{value}</div>
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           )}
         </div>
 
-        {/* Right 1/3: Order / Position / History */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {/* Right Col: Order / Position / History Panel */}
+        <div className="w-full lg:w-[360px] flex flex-col flex-shrink-0 h-full max-h-full">
           {mode === 'LIVE' ? (
-            <>
+            <Card className="flex flex-col h-full p-4 overflow-hidden">
               {/* Tab strip */}
-              <div style={{ display: 'flex', borderBottom: '1px solid var(--color-border)', gap: 2 }}>
+              <div className="flex border-b border-border mb-4">
                 {(['orders', 'positions', 'history'] as const).map(tab => (
                   <button
                     key={tab}
                     onClick={() => setTab(tab)}
-                    className="btn btn-ghost btn-sm"
-                    style={{
-                      flex: 1, justifyContent: 'center', fontSize: '0.72rem',
-                      color: activeTab === tab ? 'var(--color-accent)' : 'var(--text-muted)',
-                      borderRadius: 'var(--radius-sm) var(--radius-sm) 0 0',
-                      borderBottom: activeTab === tab ? '2px solid var(--color-accent)' : '2px solid transparent',
-                      paddingBottom: 8,
-                    }}
+                    className={`flex-1 text-center text-xs font-semibold pb-2 border-b-2 transition-fast ${
+                      activeTab === tab 
+                        ? 'border-accent text-accent' 
+                        : 'border-transparent text-muted hover:text-primary'
+                    }`}
                   >
                     {tab === 'orders' ? '📝 Order' : tab === 'positions' ? `📦 Pos (${positions.length})` : '📋 History'}
                   </button>
                 ))}
               </div>
-              {activeTab === 'orders' && (
-                <OrderPanel symbol={symbol} currentPrice={livePrice} onMessage={showToast} />
-              )}
-              {activeTab === 'positions' && (
-                <PositionPanel currentPrice={livePrice} onMessage={showToast} />
-              )}
-              {activeTab === 'history' && <TradeHistoryPanel />}
-            </>
+              
+              <div className="flex-1 overflow-hidden">
+                {activeTab === 'orders' && (
+                  <OrderPanel symbol={symbol} currentPrice={livePrice} onMessage={showToast} />
+                )}
+                {activeTab === 'positions' && (
+                  <PositionPanel currentPrice={livePrice} onMessage={showToast} />
+                )}
+                {activeTab === 'history' && <TradeHistoryPanel />}
+              </div>
+            </Card>
           ) : (
-            <div className="card">
-              <h3 style={{ marginBottom: 12 }}>🔧 Strategy Config</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Card className="flex flex-col h-max">
+              <h3 className="font-bold mb-4 flex items-center gap-2"><Settings size={16} /> Strategy Config</h3>
+              <div className="flex flex-col gap-3">
                 {[
                   ['Strategy', 'EMA Crossover'],
                   ['Fast EMA', '9 periods'],
@@ -483,23 +479,23 @@ export default function TradingTerminal() {
                   ['Slippage', '0.05%'],
                   ['Sizing', '20% fixed fractional'],
                 ].map(([k, v]) => (
-                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
-                    <span style={{ color: 'var(--text-muted)' }}>{k}</span>
-                    <span style={{ fontWeight: 600, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>{v}</span>
+                  <div key={k} className="flex justify-between items-center text-sm">
+                    <span className="text-muted">{k}</span>
+                    <span className="font-bold font-mono text-primary">{v}</span>
                   </div>
                 ))}
               </div>
               <button
-                className="btn btn-primary mt-4"
-                style={{ width: '100%', justifyContent: 'center' }}
+                className="btn btn-primary w-full mt-6 justify-center py-2.5"
                 onClick={runBacktest}
                 disabled={isBacktesting || candles.length === 0}
               >
                 {isBacktesting ? '⏳ Running…' : `▶ Run on ${symbol}`}
               </button>
-            </div>
+            </Card>
           )}
         </div>
+        
       </div>
     </div>
   );

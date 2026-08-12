@@ -34,25 +34,19 @@ export default function Header({ onMenuClick }: Props) {
       </button>
 
       {/* ── Search ───────────────────────────────────────────────── */}
-      <div
-        className="header-search"
-        style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '6px 12px', flex: 1, maxWidth: 300 }}
-      >
+      <div className="header-search">
         <Search size={15} color="var(--text-muted)" />
         <input
           placeholder="Search symbols…"
-          style={{ background: 'none', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: '0.85rem', width: '100%' }}
+          className="header-search-input"
         />
       </div>
 
       {/* ── Day P&L Ticker ───────────────────────────────────────── */}
       {hasData && (
-        <div
-          className="header-ticker"
-          style={{ display: 'flex', alignItems: 'center', gap: '10px', background: isProfit ? 'var(--color-profit-bg)' : 'var(--color-loss-bg)', border: `1px solid ${isProfit ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)'}`, borderRadius: 'var(--radius-md)', padding: '6px 14px' }}
-        >
+        <div className={`header-ticker ${isProfit ? 'profit' : 'loss'}`}>
           {isProfit ? <TrendingUp size={15} color="var(--color-profit)" /> : <TrendingDown size={15} color="var(--color-loss)" />}
-          <span style={{ fontSize: '0.82rem', fontWeight: 600, color: isProfit ? 'var(--color-profit)' : 'var(--color-loss)' }}>
+          <span className={`header-ticker-text ${isProfit ? 'profit' : 'loss'}`}>
             Today: {formatCurrency(summary.day_pnl, true)} ({formatPct(summary.day_pnl_pct)})
           </span>
         </div>
@@ -60,24 +54,23 @@ export default function Header({ onMenuClick }: Props) {
 
       {/* ── Portfolio value ──────────────────────────────────────── */}
       {hasData && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', background: 'var(--color-accent-dim)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(16,185,129,0.2)', flexShrink: 0 }}>
-          <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-accent-light)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>
+        <div className="header-portfolio-value">
+          <span className="header-portfolio-amount">
             {formatCurrency(summary.current_value, true)}
           </span>
-          <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Portfolio</span>
+          <span className="header-portfolio-label">Portfolio</span>
         </div>
       )}
 
-      <div style={{ flex: 1 }} />
+      <div className="flex-1" />
 
       {/* ── Actions ──────────────────────────────────────────────── */}
       <button
-        className="btn btn-ghost btn-icon"
+        className="btn btn-ghost btn-icon text-muted"
         data-tooltip="Refresh Market Data"
         data-tooltip-pos="bottom"
         data-tooltip-align="right"
         aria-label="Refresh Market Data"
-        style={{ color: 'var(--text-muted)' }}
         onClick={async () => {
           setIsRefreshing(true)
           try { await refreshMarketData() } finally { setIsRefreshing(false) }
@@ -88,30 +81,28 @@ export default function Header({ onMenuClick }: Props) {
       </button>
 
       <button 
-        className="btn btn-ghost btn-icon" 
+        className="btn btn-ghost btn-icon text-muted" 
         data-tooltip="Notifications" 
         data-tooltip-pos="bottom"
         data-tooltip-align="right"
         aria-label="Notifications" 
-        style={{ color: 'var(--text-muted)' }}
       >
         <Bell size={17} />
       </button>
 
       <button 
-        className="btn btn-ghost btn-icon" 
+        className="btn btn-ghost btn-icon text-muted" 
         data-tooltip="Toggle Theme" 
         data-tooltip-pos="bottom"
         data-tooltip-align="right"
         aria-label="Toggle Theme" 
-        style={{ color: 'var(--text-muted)' }}
         onClick={() => updateSettings({ theme: settings.theme === 'light' ? 'dark' : 'light' })}
       >
         {settings.theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
       </button>
 
       <div
-        style={{ width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg, var(--color-accent), #059669)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 800, color: 'white', cursor: 'pointer', flexShrink: 0 }}
+        className="header-avatar"
         onClick={() => setShowProfile(true)}
         role="button"
         aria-label="User profile"
@@ -126,3 +117,4 @@ export default function Header({ onMenuClick }: Props) {
     </header>
   )
 }
+

@@ -32,51 +32,39 @@ export default function OrderPanel({ symbol, currentPrice, onMessage }: Props) {
   }
 
   return (
-    <div className="card">
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-        <h3 style={{ margin: 0 }}>Order Panel</h3>
-        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-          Capital: <strong style={{ color: 'var(--color-accent)' }}>${capital.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
+    <div className="flex flex-col h-full">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-bold text-sm m-0">Order Panel</h3>
+        <span className="text-xs text-muted font-mono">
+          Capital: <strong className="text-accent">${capital.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
         </span>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3 flex-1">
 
         {/* Buy / Sell toggle */}
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div className="flex gap-2">
           <button
             type="button"
             onClick={() => setSide('buy')}
-            className="btn"
-            style={{
-              flex: 1, justifyContent: 'center',
-              background: side === 'buy' ? '#10B981' : 'var(--color-bg-primary)',
-              color: side === 'buy' ? 'white' : 'var(--text-muted)',
-              border: `1px solid ${side === 'buy' ? '#10B981' : 'var(--color-border)'}`,
-            }}
+            className={`btn flex-1 justify-center transition-fast ${side === 'buy' ? 'bg-[#10B981] text-white border-[#10B981]' : 'bg-bg-primary text-muted border-border'}`}
           >
             ▲ BUY
           </button>
           <button
             type="button"
             onClick={() => setSide('sell')}
-            className="btn"
-            style={{
-              flex: 1, justifyContent: 'center',
-              background: side === 'sell' ? '#EF4444' : 'var(--color-bg-primary)',
-              color: side === 'sell' ? 'white' : 'var(--text-muted)',
-              border: `1px solid ${side === 'sell' ? '#EF4444' : 'var(--color-border)'}`,
-            }}
+            className={`btn flex-1 justify-center transition-fast ${side === 'sell' ? 'bg-[#EF4444] text-white border-[#EF4444]' : 'bg-bg-primary text-muted border-border'}`}
           >
             ▼ SELL
           </button>
         </div>
 
         {/* Order type */}
-        <div className="form-group">
-          <label className="form-label">Order Type</label>
+        <div className="form-group mb-0">
+          <label className="form-label text-xs font-semibold mb-1">Order Type</label>
           <select
-            className="form-select"
+            className="form-select bg-bg-primary border-border text-sm"
             value={type}
             onChange={e => setType(e.target.value as typeof type)}
           >
@@ -87,71 +75,64 @@ export default function OrderPanel({ symbol, currentPrice, onMessage }: Props) {
         </div>
 
         {/* Symbol (read-only) */}
-        <div className="form-group">
-          <label className="form-label">Symbol</label>
-          <input className="form-input" value={symbol} readOnly
-            style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, opacity: 0.7 }} />
+        <div className="form-group mb-0">
+          <label className="form-label text-xs font-semibold mb-1">Symbol</label>
+          <input className="form-input bg-bg-primary border-border font-mono font-bold opacity-70 cursor-not-allowed" value={symbol} readOnly />
         </div>
 
         {/* Quantity */}
-        <div className="form-group">
-          <label className="form-label">Quantity</label>
+        <div className="form-group mb-0">
+          <label className="form-label text-xs font-semibold mb-1">Quantity</label>
           <input
             type="number"
-            className="form-input"
+            className="form-input bg-bg-primary border-border font-mono"
             min="1"
             step="1"
             value={quantity}
             onChange={e => setQty(Math.max(1, Number(e.target.value)))}
-            style={{ fontFamily: 'var(--font-mono)' }}
           />
         </div>
 
         {/* Trigger price for limit/stop */}
         {type !== 'market' && (
-          <div className="form-group">
-            <label className="form-label">{type === 'limit' ? 'Limit Price' : 'Stop Price'}</label>
+          <div className="form-group mb-0">
+            <label className="form-label text-xs font-semibold mb-1">{type === 'limit' ? 'Limit Price' : 'Stop Price'}</label>
             <input
               type="number"
-              className="form-input"
+              className="form-input bg-bg-primary border-border font-mono"
               min="0"
               step="0.01"
               value={triggerPrice}
               onChange={e => setTriggerPrice(Number(e.target.value))}
-              style={{ fontFamily: 'var(--font-mono)' }}
             />
           </div>
         )}
 
         {/* Order summary */}
-        <div style={{
-          background: 'var(--color-bg-primary)',
-          borderRadius: 'var(--radius-md)',
-          padding: '10px 12px',
-          fontSize: '0.78rem',
-        }}>
+        <div className="bg-bg-primary rounded-md p-3 text-xs flex flex-col gap-1.5 mt-2">
           {[
             ['Price', type === 'market' ? `$${currentPrice.toFixed(2)} (market)` : `$${triggerPrice.toFixed(2)}`],
             ['Est. Value', `$${estimatedValue.toFixed(2)}`],
             ['Commission', `$${commission.toFixed(3)}`],
             ['Total Cost', `$${(estimatedValue + (side === 'buy' ? commission : 0)).toFixed(2)}`],
           ].map(([k, v]) => (
-            <div key={k} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-              <span style={{ color: 'var(--text-muted)' }}>{k}</span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{v}</span>
+            <div key={k} className="flex justify-between">
+              <span className="text-muted">{k}</span>
+              <span className="font-mono font-bold">{v}</span>
             </div>
           ))}
         </div>
 
         <button
           type="submit"
-          className="btn"
+          className="btn mt-auto"
           disabled={currentPrice <= 0}
           style={{
             background: side === 'buy' ? '#10B981' : '#EF4444',
             color: 'white',
             justifyContent: 'center',
             opacity: currentPrice <= 0 ? 0.5 : 1,
+            border: 'none',
           }}
         >
           {currentPrice <= 0 ? 'Waiting for price…' : `${side === 'buy' ? '▲ BUY' : '▼ SELL'} ${quantity} ${symbol}`}
