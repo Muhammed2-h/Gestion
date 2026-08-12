@@ -105,7 +105,7 @@ export default function Goals() {
       ) : null}
 
       {goals.length > 0 && (
-        <div className="grid grid-3 gap-5 mb-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
+        <div className="grid grid-3 gap-5 mb-6 grid-auto-fill-320">
           {goals.map((g) => {
             const pct = g.target_amount > 0 ? Math.min((g.current_amount / g.target_amount) * 100, 100) : 0
             const days = daysLeft(g.target_date)
@@ -139,7 +139,7 @@ export default function Goals() {
                 <div className="mb-4">
                   <div className="flex justify-between items-end mb-1.5">
                     <span className="text-xs font-bold text-primary">{pct.toFixed(1)}%</span>
-                    <span className="text-[0.65rem] text-muted">of {formatCurrency(g.target_amount, true)}</span>
+                    <span className="text-xs text-muted">of {formatCurrency(g.target_amount, true)}</span>
                   </div>
                   <div className="h-2 bg-bg-secondary rounded-full overflow-hidden">
                     <div 
@@ -154,11 +154,11 @@ export default function Goals() {
 
                 <div className="flex items-center justify-between mb-4 bg-bg-primary border border-border rounded-md p-3">
                   <div>
-                    <div className="text-[0.65rem] text-muted uppercase tracking-wider mb-0.5">Saved</div>
+                    <div className="text-xs text-muted uppercase tracking-wider mb-0.5">Saved</div>
                     <div className="font-mono font-bold text-accent text-sm">{formatCurrency(g.current_amount, true)}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-[0.65rem] text-muted uppercase tracking-wider mb-0.5">Needed</div>
+                    <div className="text-xs text-muted uppercase tracking-wider mb-0.5">Needed</div>
                     <div className={`font-mono font-bold text-sm ${isCompleted ? 'text-muted line-through' : 'text-primary'}`}>
                       {formatCurrency(Math.max(g.target_amount - g.current_amount, 0), true)}
                     </div>

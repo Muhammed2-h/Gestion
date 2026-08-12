@@ -77,7 +77,7 @@ export default function Dashboard() {
   if (isEmpty) {
     return (
       <div className="app-content animate-fade-in flex-col items-center justify-center">
-        <div style={{ maxWidth: 620, margin: "60px auto", textAlign: "center" }}>
+        <div className="max-w-[620px] mx-auto my-[60px] text-center">
           <div className="text-4xl mb-4">📊</div>
           <h1 className="mb-2">Welcome to Gestion</h1>
           <p className="text-muted mb-6">
@@ -125,7 +125,7 @@ export default function Dashboard() {
 
       {/* ── Intelligence Banner ── */}
       {insights.length > 0 && (
-        <Card className="mb-6 bg-info-bg border-info" style={{ borderColor: 'rgba(59, 130, 246, 0.2)', backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
+        <Card className="mb-6 bg-info/10 border-info/20">
           <div className="flex items-center gap-3">
             <Activity className="text-info" size={20} />
             <div className="flex flex-wrap gap-4">
@@ -197,7 +197,7 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <div className="flex items-center justify-center border border-dashed border-border-light rounded-md" style={{ height: 300, backgroundColor: 'var(--color-bg-secondary)' }}>
+        <div className="flex items-center justify-center border border-dashed border-border-light rounded-md h-[300px] bg-bg-secondary">
           <div className="text-center">
             <Activity className="mx-auto mb-2 text-muted" size={24} />
             <p className="text-sm text-secondary font-medium">Insufficient historical data to calculate performance</p>

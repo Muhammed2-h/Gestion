@@ -82,7 +82,7 @@ function AddSymbolModal({ onClose }: { onClose: () => void }) {
                 key={ex} 
                 className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-md cursor-pointer border text-sm transition-fast ${
                   exchange === ex 
-                    ? 'border-[#60A5FA]/50 bg-[#60A5FA]/10 font-bold text-[#60A5FA]' 
+                    ? 'border-info/50 bg-info/10 font-bold text-info' 
                     : 'border-border bg-bg-primary text-muted'
                 }`}
               >
@@ -159,7 +159,7 @@ function AddAlertModal({ item, onClose }: { item: WatchlistItem; onClose: () => 
                 }`}
               >
                 <div className="font-bold text-sm">{label}</div>
-                <div className="text-[0.65rem] mt-1 text-muted">{desc}</div>
+                <div className="text-xs mt-1 text-muted">{desc}</div>
               </button>
             ))}
           </div>
@@ -234,15 +234,15 @@ function WatchlistRow({ item }: { item: WatchlistItem }) {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="font-bold text-sm text-primary">{item.symbol}</span>
-            <Badge variant="default" className="text-[0.6rem] py-0 px-1.5">{item.exchange}</Badge>
+            <Badge variant="default" className="text-xs py-0 px-1.5">{item.exchange}</Badge>
             {triggeredAlerts > 0 && (
-              <Badge variant="loss" className="text-[0.6rem] py-0 px-1.5 flex items-center gap-1">
+              <Badge variant="loss" className="text-xs py-0 px-1.5 flex items-center gap-1">
                 <BellRing size={10} /> {triggeredAlerts} fired
               </Badge>
             )}
           </div>
           {item.lastUpdated && (
-            <div className="text-[0.65rem] text-muted">
+            <div className="text-xs text-muted">
               Updated {new Date(item.lastUpdated).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
             </div>
           )}
@@ -258,7 +258,7 @@ function WatchlistRow({ item }: { item: WatchlistItem }) {
           <div className="font-mono font-bold text-sm text-primary">
             {item.ltp ? `₹${item.ltp.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <span className="text-muted">—</span>}
           </div>
-          <div className="text-[0.65rem] text-muted uppercase tracking-wider">LTP</div>
+          <div className="text-xs text-muted uppercase tracking-wider">LTP</div>
         </div>
 
         {/* Day Change */}
@@ -269,7 +269,7 @@ function WatchlistRow({ item }: { item: WatchlistItem }) {
                 {isUp ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
                 {isUp ? '+' : ''}{item.dayChange.toFixed(2)}
               </div>
-              <div className="text-[0.65rem] font-bold">{(item.dayChangePct ?? 0) >= 0 ? '+' : ''}{(item.dayChangePct ?? 0).toFixed(2)}%</div>
+              <div className="text-xs font-bold">{(item.dayChangePct ?? 0) >= 0 ? '+' : ''}{(item.dayChangePct ?? 0).toFixed(2)}%</div>
             </div>
           ) : <span className="text-muted text-xs">—</span>}
         </div>
@@ -277,10 +277,10 @@ function WatchlistRow({ item }: { item: WatchlistItem }) {
         {/* O / H / L */}
         {(['open', 'high', 'low'] as const).map((key) => (
           <div key={key} className="hidden md:block text-right min-w-[60px]">
-            <div className={`font-mono text-[0.75rem] ${key === 'high' ? 'text-profit' : key === 'low' ? 'text-loss' : 'text-secondary'}`}>
+            <div className={`font-mono text-xs ${key === 'high' ? 'text-profit' : key === 'low' ? 'text-loss' : 'text-secondary'}`}>
               {item[key] ? `₹${item[key]!.toLocaleString('en-IN', { maximumFractionDigits: 2 })}` : '—'}
             </div>
-            <div className="text-[0.6rem] text-muted uppercase tracking-wider">{key}</div>
+            <div className="text-xs text-muted uppercase tracking-wider">{key}</div>
           </div>
         ))}
 
@@ -292,7 +292,7 @@ function WatchlistRow({ item }: { item: WatchlistItem }) {
             title="Set price alert"
           >
             {activeAlerts > 0 ? <Bell size={12} fill="currentColor" /> : <Bell size={12} />}
-            <span className="text-[0.7rem]">{activeAlerts > 0 ? `${activeAlerts} alert${activeAlerts !== 1 ? 's' : ''}` : 'Alert'}</span>
+            <span className="text-xs">{activeAlerts > 0 ? `${activeAlerts} alert${activeAlerts !== 1 ? 's' : ''}` : 'Alert'}</span>
           </button>
         </div>
 
@@ -355,7 +355,7 @@ function AlertsPanel() {
                 <span className="text-muted mx-2">{condLabel[a.condition]} ₹{a.targetPrice.toLocaleString('en-IN')}</span>
                 {a.note && <span className="text-muted italic text-xs">· {a.note}</span>}
               </div>
-              <span className="text-[0.65rem] text-muted">
+              <span className="text-xs text-muted">
                 {a.triggeredAt ? new Date(a.triggeredAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : ''}
               </span>
               <button className="p-1 text-muted hover:text-loss transition-fast rounded" onClick={() => removeAlert(a.id)}><X size={14} /></button>
@@ -446,7 +446,7 @@ export default function Watchlist() {
           >
             {icon}{label}
             {key === 'alerts' && triggeredAlerts > 0 && (
-              <span className="bg-loss text-white rounded-full text-[0.6rem] font-bold px-1.5 ml-1">
+              <span className="bg-loss text-white rounded-full text-xs font-bold px-1.5 ml-1">
                 {triggeredAlerts}
               </span>
             )}
@@ -471,7 +471,7 @@ export default function Watchlist() {
               <div className="min-w-[700px]">
                 {/* Column headers */}
                 <div 
-                  className="grid gap-4 py-2 px-4 bg-bg-card border-b border-border text-[0.65rem] font-bold tracking-wider uppercase text-muted sticky top-0 z-10"
+                  className="grid gap-4 py-2 px-4 bg-bg-card border-b border-border text-xs font-bold tracking-wider uppercase text-muted sticky top-0 z-10"
                   style={{ gridTemplateColumns: 'minmax(120px, 1fr) 80px auto auto auto auto 90px 40px' }}
                 >
                   <span>Symbol</span>
@@ -508,8 +508,8 @@ export default function Watchlist() {
             { icon: <Bell size={14} />,      text: 'Price alerts fire browser notifications (allow permission when prompted)' },
             { icon: <BellRing size={14} />,  text: 'Supports 4 conditions: above, below, crosses above & crosses below' },
           ].map(({ icon, text }, i) => (
-            <div key={i} className="flex items-center gap-2 text-[0.75rem] text-muted flex-1 min-w-[200px]">
-              <span className="text-[#60A5FA] flex-shrink-0">{icon}</span>
+            <div key={i} className="flex items-center gap-2 text-xs text-muted flex-1 min-w-[200px]">
+              <span className="text-info flex-shrink-0">{icon}</span>
               {text}
             </div>
           ))}

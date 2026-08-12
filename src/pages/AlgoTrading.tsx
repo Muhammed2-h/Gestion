@@ -116,7 +116,7 @@ export default function AlgoTrading() {
         </Card>
       )}
 
-      <div className="grid gap-6 flex-1" style={{ gridTemplateColumns: '1fr 340px' }}>
+      <div className="grid gap-6 flex-1 grid-cols-algo">
         <div className="flex flex-col gap-6">
           {/* Strategy Selection */}
           <Card className="flex flex-col">
@@ -145,7 +145,7 @@ export default function AlgoTrading() {
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-bold text-sm text-primary">{s.name}</div>
-                    <Badge variant={s.active ? 'profit' : 'default'} className="text-[0.6rem] py-0 px-1.5">{s.active ? 'ACTIVE' : 'IDLE'}</Badge>
+                    <Badge variant={s.active ? 'profit' : 'default'} className="text-xs py-0 px-1.5">{s.active ? 'ACTIVE' : 'IDLE'}</Badge>
                   </div>
                   <div className="text-xs text-muted mb-3 h-8">{s.desc}</div>
                   <div className="flex justify-between items-center">
@@ -162,13 +162,13 @@ export default function AlgoTrading() {
           </Card>
 
           {/* Terminal / Logs */}
-          <Card className="flex-1 flex flex-col !bg-[#0a0a0a] !border-[#222]">
-            <h3 className="font-bold flex items-center gap-2 mb-4 text-[#888]">
+          <Card className="flex-1 flex flex-col bg-bg-primary border-border">
+            <h3 className="font-bold flex items-center gap-2 mb-4 text-muted">
               <TerminalSquare size={16} /> Console Logs
             </h3>
-            <div className="font-mono text-xs text-[#00ff00] flex flex-col gap-1.5 h-[200px] overflow-y-auto pr-2 custom-scrollbar flex-1">
+            <div className="font-mono text-xs text-profit flex flex-col gap-1.5 h-[200px] overflow-y-auto pr-2 custom-scrollbar flex-1">
               {logs.map((log, i) => (
-                <div key={i} className={`${log.includes('[WARN]') ? 'text-yellow-400' : log.includes('[ENGINE]') ? 'text-cyan-400' : 'text-[#888]'}`}>
+                <div key={i} className={`${log.includes('[WARN]') ? 'text-yellow-400' : log.includes('[ENGINE]') ? 'text-cyan-400' : 'text-muted'}`}>
                   {log}
                 </div>
               ))}

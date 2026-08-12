@@ -47,14 +47,14 @@ export default function OrderPanel({ symbol, currentPrice, onMessage }: Props) {
           <button
             type="button"
             onClick={() => setSide('buy')}
-            className={`btn flex-1 justify-center transition-fast ${side === 'buy' ? 'bg-[#10B981] text-white border-[#10B981]' : 'bg-bg-primary text-muted border-border'}`}
+            className={`btn flex-1 justify-center transition-fast ${side === 'buy' ? 'bg-profit text-white border-profit-bg' : 'bg-bg-primary text-muted border-border'}`}
           >
             ▲ BUY
           </button>
           <button
             type="button"
             onClick={() => setSide('sell')}
-            className={`btn flex-1 justify-center transition-fast ${side === 'sell' ? 'bg-[#EF4444] text-white border-[#EF4444]' : 'bg-bg-primary text-muted border-border'}`}
+            className={`btn flex-1 justify-center transition-fast ${side === 'sell' ? 'bg-loss text-white border-loss-bg' : 'bg-bg-primary text-muted border-border'}`}
           >
             ▼ SELL
           </button>

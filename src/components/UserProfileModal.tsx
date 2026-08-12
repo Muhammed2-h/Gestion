@@ -123,7 +123,7 @@ export default function UserProfileModal({ onClose }: Props) {
         <div style={sectionBox} className="mb-4">
           <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Preferences</div>
           
-          <div className="flex items-center justify-between py-3 border-b border-[var(--color-border-light)]">
+          <div className="flex items-center justify-between py-3 border-b border-border-light">
             <div>
               <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Theme</div>
               <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Switch between Dark and Light mode</div>

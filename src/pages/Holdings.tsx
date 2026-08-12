@@ -165,7 +165,7 @@ export default function Holdings() {
                     </td>
                     <td>
                       {h.sector 
-                        ? <Badge variant="default" className="text-[0.65rem] py-0.5 px-2">{h.sector}</Badge>
+                        ? <Badge variant="default" className="text-xs py-0.5 px-2">{h.sector}</Badge>
                         : <span className="text-xs text-muted italic">—</span>}
                     </td>
                     <td className="text-right font-mono text-sm">{h.total_quantity}</td>

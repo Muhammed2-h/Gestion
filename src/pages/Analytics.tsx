@@ -155,7 +155,7 @@ export default function Analytics() {
             <div key={label} className="bg-bg-primary rounded-md p-4 border border-border border-l-[3px]" style={{ borderLeftColor: 'currentColor' }}>
               <div className="text-xs text-muted uppercase tracking-wider mb-2 font-semibold">{label}</div>
               <div className={`text-2xl font-bold font-mono mb-1 ${color}`}>{formatCurrency(val, true)}</div>
-              <div className="text-[0.65rem] text-muted italic">{note}</div>
+              <div className="text-xs text-muted italic">{note}</div>
             </div>
           ))}
         </div>

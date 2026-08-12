@@ -85,7 +85,7 @@ export default function Accounts() {
               <div className="text-xs text-muted">{acc.broker_name}</div>
             </div>
           </div>
-          <Badge variant={acc.is_api_synced ? (acc.api_status === 'error' ? 'loss' : 'profit') : 'warning'} className="text-[0.65rem] font-bold py-1 px-2 flex items-center gap-1">
+          <Badge variant={acc.is_api_synced ? (acc.api_status === 'error' ? 'loss' : 'profit') : 'warning'} className="text-xs font-bold py-1 px-2 flex items-center gap-1">
             {acc.is_api_synced 
               ? (acc.api_status === 'error' ? <><AlertCircle size={10} /> Sync Error</> : <><CheckCircle size={10} /> API Synced</>) 
               : 'Manual Entry'}
@@ -100,16 +100,16 @@ export default function Accounts() {
             { label: 'P&L',          val: stats.pnl !== 0 ? `${stats.pnl >= 0 ? '+' : ''}₹${(stats.pnl/100000).toFixed(1)}L` : '—', color: stats.pnl >= 0 ? 'text-profit' : 'text-loss' },
           ].map(({ label, val, color: vc }) => (
             <div key={label} className="bg-bg-primary rounded-md p-2">
-              <div className="text-[0.65rem] text-muted uppercase tracking-wider mb-0.5">{label}</div>
+              <div className="text-xs text-muted uppercase tracking-wider mb-0.5">{label}</div>
               <div className={`font-bold text-sm font-mono ${vc ?? 'text-primary'}`}>{val}</div>
             </div>
           ))}
         </div>
 
-        <div className="text-[0.7rem] text-muted mb-4 flex items-center justify-between">
+        <div className="text-xs text-muted mb-4 flex items-center justify-between">
           <div className="flex items-center gap-1">
             Added {formatDate(acc.created_at)}
-            <Badge variant="default" className="text-[0.6rem] ml-1 px-1.5 py-0 uppercase">{acc.type}</Badge>
+            <Badge variant="default" className="text-xs ml-1 px-1.5 py-0 uppercase">{acc.type}</Badge>
           </div>
           {acc.last_synced && (
             <span className="italic">Synced {new Date(acc.last_synced).toLocaleDateString()}</span>
@@ -120,7 +120,7 @@ export default function Accounts() {
           {acc.api_key && (
             <button
               className="btn btn-sm flex-1"
-              style={{ background: '#6366F1', borderColor: '#6366F1', color: 'white' }}
+              style={{ background: 'var(--color-accent)', borderColor: 'var(--color-accent)', color: 'white' }}
               onClick={() => setSyncingAcc(acc)}
             >
               <RefreshCw size={12} /> Sync Now
@@ -176,7 +176,7 @@ export default function Accounts() {
           <h3 className="font-bold mb-4 flex items-center gap-2">
             <Zap size={16} className="text-accent" /> API Connected Brokers
           </h3>
-          <div className="grid grid-3 gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
+          <div className="grid grid-3 gap-5 grid-auto-fill-320">
             {groupedAccounts.connected.map(renderAccountCard)}
             {groupedAccounts.manual.length === 0 && renderAddCard()}
           </div>
@@ -188,7 +188,7 @@ export default function Accounts() {
           <h3 className="font-bold mb-4 flex items-center gap-2">
             <RefreshCw size={16} className="text-muted" /> Manual Accounts
           </h3>
-          <div className="grid grid-3 gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
+          <div className="grid grid-3 gap-5 grid-auto-fill-320">
             {groupedAccounts.manual.map(renderAccountCard)}
             {renderAddCard()}
           </div>

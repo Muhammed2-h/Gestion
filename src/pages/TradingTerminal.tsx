@@ -148,14 +148,14 @@ function PriceTicker({ symbol }: { symbol: string }) {
   }, [quote, symbol, updatePositionPrices, processPendingOrders]);
 
   if (loading) return (
-    <div className="flex items-center gap-2 text-[0.82rem] text-muted">
+    <div className="flex items-center gap-2 text-sm text-muted">
       <div className="animate-spin w-3.5 h-3.5 border-2 border-accent border-t-transparent rounded-full" />
       Fetching price…
     </div>
   );
 
   if (error || !quote) return (
-    <div className="text-[0.78rem] text-warning flex items-center gap-1.5">
+    <div className="text-xs text-warning flex items-center gap-1.5">
       <Info size={13} />
       {error ?? 'No price data'}
     </div>
@@ -178,7 +178,7 @@ function PriceTicker({ symbol }: { symbol: string }) {
       </div>
 
       {/* OHLV mini */}
-      <div className="flex gap-3 text-[0.72rem] text-muted ml-2">
+      <div className="flex gap-3 text-xs text-muted ml-2">
         {[
           ['O', quote.open],
           ['H', quote.high],
@@ -372,11 +372,11 @@ export default function TradingTerminal() {
           { label: 'Positions', value: String(positions.length), color: 'text-primary' },
         ].map(({ label, value, color }) => (
           <div key={label} className="flex flex-col gap-1">
-            <div className="text-[0.65rem] text-muted font-bold tracking-wider uppercase">{label}</div>
+            <div className="text-xs text-muted font-bold tracking-wider uppercase">{label}</div>
             <div className={`font-mono font-bold text-sm ${color}`}>{value}</div>
           </div>
         ))}
-        <div className="ml-auto text-[0.7rem] text-muted">
+        <div className="ml-auto text-xs text-muted">
           Initial: $100,000
         </div>
       </Card>
@@ -388,7 +388,7 @@ export default function TradingTerminal() {
         <div className="flex-1 flex flex-col gap-5 min-w-0 h-full overflow-y-auto custom-scrollbar pr-2 lg:pr-0">
           
           <Card className="flex flex-col p-4 border-l-4 border-l-info">
-            <div className="text-[0.65rem] text-muted mb-2 font-bold uppercase tracking-wider">
+            <div className="text-xs text-muted mb-2 font-bold uppercase tracking-wider">
               {symbol} · refreshes every 15s
             </div>
             <PriceTicker symbol={symbol} />
@@ -398,10 +398,10 @@ export default function TradingTerminal() {
             <div className="flex items-center justify-between p-3 border-b border-border bg-bg-secondary/50">
               <span className="font-bold text-sm">{symbol} — Daily Candles</span>
               {candles.length === 0 && (
-                <span className="text-[0.7rem] text-muted">Loading chart…</span>
+                <span className="text-xs text-muted">Loading chart…</span>
               )}
             </div>
-            <div className="bg-[#131722]">
+            <div className="bg-bg-secondary">
               {candles.length > 0
                 ? <CandlestickChart candles={candles} livePrice={livePrice} />
                 : <div className="h-[360px] flex items-center justify-center text-muted text-sm">Loading chart data…</div>
@@ -425,7 +425,7 @@ export default function TradingTerminal() {
                   { label: 'Final Eq',   value: `$${result.finalEquity.toFixed(0)}`, color: 'text-primary' },
                 ].map(({ label, value, color }) => (
                   <div key={label} className="bg-bg-primary rounded-md p-3 border border-border">
-                    <div className="text-[0.65rem] text-muted uppercase tracking-wider font-semibold mb-1">{label}</div>
+                    <div className="text-xs text-muted uppercase tracking-wider font-semibold mb-1">{label}</div>
                     <div className={`text-base font-bold font-mono ${color}`}>{value}</div>
                   </div>
                 ))}

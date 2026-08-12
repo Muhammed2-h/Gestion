@@ -139,7 +139,7 @@ export default function SectorView() {
         <Card className="mb-4 p-4 border-info bg-info-bg">
           <div className="flex justify-between items-center mb-3">
             <div className="flex items-center gap-2 text-sm text-secondary">
-              <RefreshCw size={14} className="animate-spin text-[#3B82F6]" />
+              <RefreshCw size={14} className="animate-spin text-accent" />
               <span>Querying Yahoo Finance &amp; static sector database…</span>
             </div>
             <span className="font-mono text-xs text-muted">
@@ -155,7 +155,7 @@ export default function SectorView() {
               }} 
             />
           </div>
-          <p className="text-[0.7rem] text-muted mt-2">
+          <p className="text-xs text-muted mt-2">
             Symbols are processed in batches of 3 with a short pause to respect rate limits.
           </p>
         </Card>
@@ -273,7 +273,7 @@ export default function SectorView() {
                 >
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
                   <span className="font-bold text-sm">{sector.sector}</span>
-                  <span className="text-[0.7rem] text-muted">
+                  <span className="text-xs text-muted">
                     {sh.length} holding{sh.length !== 1 ? 's' : ''} · {sector.pct.toFixed(1)}% of portfolio
                   </span>
                   <span className="ml-auto font-mono text-sm font-bold" style={{ color }}>
@@ -282,7 +282,7 @@ export default function SectorView() {
                 </div>
                 
                 {/* Holdings grid */}
-                <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
+                <div className="grid gap-3 grid-auto-fill-180">
                   {sh.map((h) => (
                     <div
                       key={h.id}
@@ -291,7 +291,7 @@ export default function SectorView() {
                     >
                       <div className="flex justify-between items-start mb-1">
                         <div className="font-bold text-sm">{h.symbol}</div>
-                        <Badge variant="default" className="text-[0.6rem] py-0 px-1.5" style={{ background: `${color}20`, color }}>
+                        <Badge variant="default" className="text-xs py-0 px-1.5" style={{ background: `${color}20`, color }}>
                           {h.exchange}
                         </Badge>
                       </div>

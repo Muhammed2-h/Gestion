@@ -46,7 +46,7 @@ export default function Auth() {
   }
 
   return (
-    <div className="w-screen min-h-screen bg-[#0a0a0b] text-primary flex justify-center items-center py-5 relative overflow-x-hidden overflow-y-auto">
+    <div className="w-screen min-h-screen bg-bg-primary text-primary flex justify-center items-center py-5 relative overflow-x-hidden overflow-y-auto">
       <div className="relative z-10 w-full max-w-6xl min-h-[600px] p-10 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         
         {/* Left Side: Branding / Landing Info */}

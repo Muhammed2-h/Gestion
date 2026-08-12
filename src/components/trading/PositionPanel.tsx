@@ -25,7 +25,7 @@ export default function PositionPanel({ currentPrice, onMessage }: Props) {
       </div>
       <div className="overflow-x-auto overflow-y-auto flex-1 custom-scrollbar">
         <table className="data-table w-full text-xs">
-          <thead className="text-[0.65rem] text-muted tracking-wider uppercase sticky top-0 bg-bg-card z-10">
+          <thead className="text-xs text-muted tracking-wider uppercase sticky top-0 bg-bg-card z-10">
             <tr>
               <th className="text-left font-semibold pb-2">Symbol</th>
               <th className="text-left font-semibold pb-2">Side</th>
@@ -41,7 +41,7 @@ export default function PositionPanel({ currentPrice, onMessage }: Props) {
               <tr key={p.symbol} className="border-b border-border/50 last:border-0 hover:bg-bg-primary transition-fast">
                 <td className="font-bold text-primary py-2.5">{p.symbol}</td>
                 <td className="py-2.5">
-                  <Badge variant={p.side === 'long' ? 'profit' : 'loss'} className="text-[0.6rem] py-0 px-1.5 uppercase">
+                  <Badge variant={p.side === 'long' ? 'profit' : 'loss'} className="text-xs py-0 px-1.5 uppercase">
                     {p.side}
                   </Badge>
                 </td>
@@ -54,13 +54,13 @@ export default function PositionPanel({ currentPrice, onMessage }: Props) {
                   <div className="font-bold font-mono">
                     {p.unrealizedPnl >= 0 ? '+' : ''}${p.unrealizedPnl.toFixed(2)}
                   </div>
-                  <div className="text-[0.6rem] font-bold">
+                  <div className="text-xs font-bold">
                     ({p.unrealizedPnlPct >= 0 ? '+' : ''}{p.unrealizedPnlPct.toFixed(2)}%)
                   </div>
                 </td>
                 <td className="text-right py-2.5 pr-2">
                   <button
-                    className="btn btn-sm bg-loss/10 text-loss hover:bg-loss/20 border-transparent transition-fast px-2 py-1 text-[0.65rem] h-auto whitespace-nowrap"
+                    className="btn btn-sm bg-loss/10 text-loss hover:bg-loss/20 border-transparent transition-fast px-2 py-1 text-xs h-auto whitespace-nowrap"
                     onClick={() => {
                       closePosition(p.symbol, currentPrice);
                       onMessage(`Closed ${p.symbol} position`, true);

@@ -151,9 +151,9 @@ export default function Transactions() {
                       <td className="text-xs text-secondary whitespace-nowrap">{formatDate(t.transaction_date)}</td>
                       <td className="text-sm text-muted">{getAccountName(t.account_id)}</td>
                       <td className="font-bold text-primary">{t.symbol}</td>
-                      <td><Badge className="text-[0.65rem] py-0.5 px-2">{t.exchange}</Badge></td>
+                      <td><Badge className="text-xs py-0.5 px-2">{t.exchange}</Badge></td>
                       <td className="text-center">
-                        <Badge variant={t.type === 'BUY' ? 'info' : t.type === 'SELL' ? 'loss' : 'profit'} className="text-[0.65rem] font-bold">
+                        <Badge variant={t.type === 'BUY' ? 'info' : t.type === 'SELL' ? 'loss' : 'profit'} className="text-xs font-bold">
                           {t.type}
                         </Badge>
                       </td>

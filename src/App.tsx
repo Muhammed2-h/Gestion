@@ -29,6 +29,35 @@ function NotFound() {
   )
 }
 
+import { Navigate, Outlet } from 'react-router-dom'
+
+function ProtectedLayout({ user, sidebarOpen, closeSidebar, toggleSidebar }: any) {
+  if (!user) {
+    return <Navigate to="/login" replace />
+  }
+
+  return (
+    <div className="app-shell">
+      {/* Off-canvas backdrop (mobile only) */}
+      <div
+        className={`sidebar-overlay${sidebarOpen ? ' visible' : ''}`}
+        onClick={closeSidebar}
+        aria-hidden="true"
+      />
+
+      <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+
+      <div className="app-main">
+        <Header onMenuClick={toggleSidebar} />
+        <Outlet />
+      </div>
+
+      {/* Mobile bottom tab bar */}
+      <MobileBottomNav />
+    </div>
+  )
+}
+
 export default function App() {
   const settings  = useSettingsStore((s) => s.settings)
   const user      = useAuthStore((s) => s.user)
@@ -70,42 +99,25 @@ export default function App() {
   const toggleSidebar = useCallback(() => setSidebarOpen(o => !o), [])
   const closeSidebar  = useCallback(() => setSidebarOpen(false), [])
 
-  if (!user) {
-    return <Auth />
-  }
-
   return (
-    <div className="app-shell">
-      {/* Off-canvas backdrop (mobile only) */}
-      <div
-        className={`sidebar-overlay${sidebarOpen ? ' visible' : ''}`}
-        onClick={closeSidebar}
-        aria-hidden="true"
-      />
-
-      <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
-
-      <div className="app-main">
-        <Header onMenuClick={toggleSidebar} />
-        <Routes>
-          <Route path="/"             element={<Dashboard />} />
-          <Route path="/holdings"     element={<Holdings />} />
-          <Route path="/transactions" element={<Transactions />} />
-          <Route path="/accounts"     element={<Accounts />} />
-          <Route path="/analytics"    element={<Analytics />} />
-          <Route path="/sector"       element={<SectorView />} />
-          <Route path="/goals"        element={<Goals />} />
-          <Route path="/algo"         element={<AlgoTrading />} />
-          <Route path="/trading"      element={<TradingTerminal />} />
-          <Route path="/watchlist"    element={<Watchlist />} />
-          <Route path="/integrations" element={<Integrations />} />
-          <Route path="/settings"     element={<Settings />} />
-          <Route path="*"             element={<NotFound />} />
-        </Routes>
-      </div>
-
-      {/* Mobile bottom tab bar */}
-      <MobileBottomNav />
-    </div>
+    <Routes>
+      <Route path="/login" element={user ? <Navigate to="/" replace /> : <Auth />} />
+      
+      <Route element={<ProtectedLayout user={user} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} closeSidebar={closeSidebar} toggleSidebar={toggleSidebar} />}>
+        <Route path="/"             element={<Dashboard />} />
+        <Route path="/holdings"     element={<Holdings />} />
+        <Route path="/transactions" element={<Transactions />} />
+        <Route path="/accounts"     element={<Accounts />} />
+        <Route path="/analytics"    element={<Analytics />} />
+        <Route path="/sector"       element={<SectorView />} />
+        <Route path="/goals"        element={<Goals />} />
+        <Route path="/algo"         element={<AlgoTrading />} />
+        <Route path="/trading"      element={<TradingTerminal />} />
+        <Route path="/watchlist"    element={<Watchlist />} />
+        <Route path="/integrations" element={<Integrations />} />
+        <Route path="/settings"     element={<Settings />} />
+        <Route path="*"             element={<NotFound />} />
+      </Route>
+    </Routes>
   )
 }

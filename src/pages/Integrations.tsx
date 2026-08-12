@@ -79,17 +79,17 @@ export default function Integrations() {
           <Badge variant="profit" className="ml-2">Free</Badge>
         </div>
         
-        <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
+        <div className="grid gap-5 grid-auto-fill-320">
           {DATA_SOURCES.map((src) => (
             <Card key={src.id} className="flex flex-col border-l-4" style={{ borderLeftColor: src.status === 'active' ? 'var(--color-profit)' : 'var(--color-border)' }}>
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <div className="font-bold text-primary mb-1">{src.name}</div>
-                  {src.requiresKey && <Badge variant="warning" className="mb-2 text-[0.65rem] py-0 px-1.5">API Key Required</Badge>}
+                  {src.requiresKey && <Badge variant="warning" className="mb-2 text-xs py-0 px-1.5">API Key Required</Badge>}
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className={`w-2 h-2 rounded-full ${src.status === 'active' ? 'bg-profit' : 'bg-border-light'}`} />
-                  <span className={`text-[0.7rem] font-bold ${src.status === 'active' ? 'text-profit' : 'text-muted'}`}>
+                  <span className={`text-xs font-bold ${src.status === 'active' ? 'text-profit' : 'text-muted'}`}>
                     {src.status === 'active' ? 'Active' : 'Inactive'}
                   </span>
                 </div>
@@ -158,11 +158,11 @@ export default function Integrations() {
                   <div className="flex-1 min-w-[160px]">
                     <div className="font-bold text-primary mb-1">{b.name}</div>
                     {conn?.connected ? (
-                      <Badge variant="profit" className="flex items-center gap-1 w-max text-[0.65rem] py-0 px-2">
+                      <Badge variant="profit" className="flex items-center gap-1 w-max text-xs py-0 px-2">
                         <CheckCircle2 size={10} /> Connected · Key: ••••{conn.apiKey.slice(-4)}
                       </Badge>
                     ) : (
-                      <Badge variant="default" className="text-[0.65rem] py-0 px-2 w-max">Not Connected</Badge>
+                      <Badge variant="default" className="text-xs py-0 px-2 w-max">Not Connected</Badge>
                     )}
                   </div>
 
