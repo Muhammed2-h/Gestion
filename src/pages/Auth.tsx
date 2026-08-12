@@ -105,10 +105,11 @@ export default function Auth() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               {!isLogin && (
                 <div className="form-group mb-0">
-                  <label className="form-label text-xs font-semibold mb-1.5 block">Full Name</label>
+                  <label htmlFor="name" className="form-label text-xs font-semibold mb-1.5 block">Full Name</label>
                   <div className="relative flex items-center">
                     <User size={16} className="text-muted absolute left-3" />
                     <input
+                      id="name"
                       type="text"
                       className="form-input bg-bg-primary pl-9 h-11 border-border w-full"
                       placeholder="John Doe"
@@ -121,10 +122,11 @@ export default function Auth() {
               )}
 
               <div className="form-group mb-0">
-                <label className="form-label text-xs font-semibold mb-1.5 block">Email Address</label>
+                <label htmlFor="email" className="form-label text-xs font-semibold mb-1.5 block">Email Address</label>
                 <div className="relative flex items-center">
                   <Mail size={16} className="text-muted absolute left-3" />
                   <input
+                    id="email"
                     type="email"
                     className="form-input bg-bg-primary pl-9 h-11 border-border w-full"
                     placeholder="you@example.com"
@@ -136,10 +138,11 @@ export default function Auth() {
               </div>
 
               <div className="form-group mb-0">
-                <label className="form-label text-xs font-semibold mb-1.5 block">Password</label>
+                <label htmlFor="password" className="form-label text-xs font-semibold mb-1.5 block">Password</label>
                 <div className="relative flex items-center">
                   <Lock size={16} className="text-muted absolute left-3" />
                   <input
+                    id="password"
                     type="password"
                     className="form-input bg-bg-primary pl-9 h-11 border-border w-full"
                     placeholder="••••••••"
@@ -172,6 +175,7 @@ export default function Auth() {
               <button
                 type="button"
                 className="btn btn-ghost text-primary p-0 font-bold hover:bg-transparent hover:underline"
+                disabled={loading}
                 onClick={() => {
                   setIsLogin(!isLogin)
                   setError('')
